@@ -46,14 +46,19 @@ test('Public quiz never reveals score or answer key',()=>{
  assert.equal(Object.hasOwn(p,'answers'),false);
  assert.equal(Object.hasOwn(p,'score'),false);
 });
-test('Participant HTML requires code and Telegram username without Telegram login popup',()=>{
+test('Participant HTML uses 15 seconds and optional Telegram username without Telegram popup',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/id="oneTimeCode"/);
  assert.match(html,/name="oneTimeCode"[^>]*maxlength="32"/);
  assert.match(html,/id="codeProgress"/);
  assert.ok(html.includes("oneTimeInput.addEventListener('input'"));
  assert.ok(html.includes("replace(/\\D/g,'').slice(0,4)"));
- assert.match(html,/id="username"[^>]*required/);
+ assert.match(html,/id="username"[^>]*maxlength="33"/);
+ assert.ok(!/id="username"[^>]*\brequired\b/.test(html));
+ assert.ok(html.includes("Telegram username ixtiyoriy"));
+ assert.ok(html.includes("DURATION=15000"));
+ assert.ok(html.includes("active.questionDurationMs||DURATION"));
+ assert.ok(html.includes("15 soniya tugasa"));
  assert.ok(!html.includes('telegram-widget.js'));
  assert.ok(!html.includes('Telegram Authorization'));
 });
