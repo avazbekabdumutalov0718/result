@@ -1,9 +1,7 @@
-import {response,errorResponse,requirePost,requireAdmin,makeCodes} from '../_lib/server.js';
+import {response,errorResponse,requirePost,requireAdmin,registeredCodes} from '../_lib/server.js';
 export default function handler(req,res){
  try{
-  requirePost(req);
-  requireAdmin(req);
-  const number=Number(req.body?.count);
-  return response(res,200,{codes:makeCodes(number)});
+  requirePost(req);requireAdmin(req);
+  return response(res,200,{codes:registeredCodes()});
  }catch(e){return errorResponse(res,e);}
 }
