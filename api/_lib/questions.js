@@ -1,0 +1,28 @@
+// Public quiz texts only; answer key is stored in Vercel QUIZ_ANSWER_KEY (never in GitHub).
+export const QUESTIONS=[
+{q:'“Romeo va Julyetta” tragediyasining muallifi kim?',a:['Victor Hugo','William Shakespeare','Charles Dickens','Lev Tolstoy'],world:true},
+{q:'“O‘tkan kunlar” romanida Otabekning otasi kim?',a:['Hasanali','Mirzakarimboy','Solih mahdum','Yusufbek hoji']},
+{q:'“Mehrobdan chayon” romanidagi sevishgan qahramonlar kimlar?',a:['Anvar va Ra’no','Otabek va Kumush','Yo‘lchi va Gulnor','Farhod va Shirin']},
+{q:'“Mehrobdan chayon” asaridagi Solih mahdum nima ish bilan shug‘ullangan?',a:['Savdogarlik','Tabiblik','Maktabdorlik','Dehqonchilik']},
+{q:'“Kichkina shahzoda” asarini kim yozgan?',a:['Jules Verne','Oscar Wilde','Antoine de Saint-Exupéry','Jack London'],world:true},
+{q:'“Kecha va kunduz” romanida Zebining otasi kim?',a:['Razzoq so‘fi','Akbarali mingboshi','Yusufbek hoji','Mirzakarimboy']},
+{q:'“Shum bola” qissasini kim yozgan?',a:['Said Ahmad','G‘afur G‘ulom','Oybek','Abdulla Qodiriy']},
+{q:'“Sariq devni minib” asarining bosh qahramoni kim?',a:['Anvar','Yo‘lchi','Hoshimjon','Otabek']},
+{q:'“Sariq devni minib” asarining muallifi kim?',a:['O‘tkir Hoshimov','Pirimqul Qodirov','Said Ahmad','Xudoyberdi To‘xtaboyev']},
+{q:'“O‘g‘ri” hikoyasida Qobil boboning nimasi o‘g‘irlanadi?',a:['Oti','Ho‘kizi','Qo‘ylari','Eshagi']},
+{q:'“O‘g‘ri” hikoyasining muallifi kim?',a:['Abdulla Qahhor','Cho‘lpon','Oybek','Said Ahmad']},
+{q:'“Qutlug‘ qon” romanining bosh qahramoni kim?',a:['Anvar','Hoshimjon','Yo‘lchi','Bobur']},
+{q:'“Qutlug‘ qon” romanini kim yozgan?',a:['Oybek','Abdulla Qodiriy','Odil Yoqubov','Cho‘lpon']},
+{q:'“Yulduzli tunlar” romanida kimning hayoti tasvirlangan?',a:['Amir Temur','Alisher Navoiy','Mirzo Ulug‘bek','Zahiriddin Muhammad Bobur']},
+{q:'“Ulug‘bek xazinasi” romanining muallifi kim?',a:['Pirimqul Qodirov','Odil Yoqubov','Oybek','Said Ahmad']},
+{q:'“Dunyoning ishlari” qissasida qaysi obraz markaziy o‘rin tutadi?',a:['Ona','Ota','Ustoz','Do‘st']},
+{q:'“Boburnoma” asarini kim yozgan?',a:['Alisher Navoiy','Abulg‘ozi Bahodirxon','Zahiriddin Muhammad Bobur','Muhammad Solih']},
+{q:'“Jinoyat va jazo” romanining bosh qahramoni kim?',a:['Rodion Raskolnikov','Andrey Bolkonskiy','Yevgeniy Onegin','Grigoriy Pechorin'],world:true},
+{q:'“Xamsa” tarkibidagi birinchi doston qaysi?',a:['Layli va Majnun','Sab’ai sayyor','Farhod va Shirin','Hayrat ul-abror']},
+{q:'“Ufq” trilogiyasining muallifi kim?',a:['Said Ahmad','Abdulla Qahhor','G‘afur G‘ulom','Oybek']},
+{q:'“Don Kixot” romanini kim yozgan?',a:['Alexandre Dumas','Victor Hugo','Daniel Defoe','Miguel de Cervantes'],world:true},
+{q:'“Oltin zanglamas” romanining muallifi kim?',a:['Oybek','Shuhrat','Cho‘lpon','Asqad Muxtor']},
+{q:'“Otamdan qolgan dalalar” romanining muallifi kim?',a:['O‘tkir Hoshimov','Said Ahmad','Mirmuhsin','Tog‘ay Murod']},
+{q:'“Chol va dengiz” asaridagi qariya baliqchining ismi nima?',a:['Manolin','Antonio','Santiago','Pedro'],world:true},
+{q:'Abdulla Qodiriy qaysi yilda tug‘ilgan?',a:['1894-yil','1905-yil','1897-yil','1910-yil']}
+];
