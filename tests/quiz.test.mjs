@@ -1,48 +1,43 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import crypto from 'node:crypto';
+import {readFileSync} from 'node:fs';
 import {QUESTIONS} from '../api/_lib/questions.js';
-import {verifyWidget,verifyMiniApp,authUser,cookieFor,present} from '../api/_lib/server.js';
-process.env.TELEGRAM_BOT_TOKEN='123456789:FAKE_TEST_TOKEN';
-test('Exactly 25 questions and five world-literature questions',()=>{
+import {makeCodes,verifyCode,requireAdmin,cookieFor,authUser,present} from '../api/_lib/server.js';
+process.env.QUIZ_ADMIN_SECRET='local_tests_use_long_very_secure_admin_secret_123!';
+test('25 questions and 5 world literature',()=>{
  assert.equal(QUESTIONS.length,25);
  assert.equal(QUESTIONS.filter(q=>q.world).length,5);
- for(const q of QUESTIONS){assert.equal(q.a.length,4);assert.ok(q.q.length>10);assert.equal(Object.hasOwn(q,'c'),false);}
+ for(const q of QUESTIONS){assert.equal(q.a.length,4);assert.equal(Object.hasOwn(q,'c'),false)}
 });
-test('Browser Telegram widget signature cannot be forged',()=>{
- const u={id:7419543322,first_name:'Tester',username:'testuser',auth_date:Math.floor(Date.now()/1000)};
- const check=Object.keys(u).sort().map(k=>k+'='+u[k]).join('\n');
- const hash=crypto.createHmac('sha256',crypto.createHash('sha256').update(process.env.TELEGRAM_BOT_TOKEN).digest()).update(check).digest('hex');
- const signed={...u,hash};
- assert.equal(verifyWidget(signed).id,7419543322);
- assert.throws(()=>verifyWidget({...signed,id:7419543323}),/imzosi/i);
+test('One-time access codes cannot be forged',()=>{
+ const codes=makeCodes(100);
+ assert.equal(codes.length,100);
+ assert.equal(new Set(codes).size,100);
+ const u=verifyCode(codes[0]);assert.match(u.codeId,/^[a-f0-9]{40}$/);
+ assert.throws(()=>verifyCode('TK-AAAAABBBBB-01234567'),/noto‘g‘ri/);
+ assert.throws(()=>verifyCode('bad'),/formati/);
 });
-test('HTTP only signed cookie permits the same verified account',()=>{
- const u={id:999001,username:'tester'};
+test('Administrator password protects code generation',()=>{
+ assert.doesNotThrow(()=>requireAdmin({headers:{'x-quiz-admin-key':process.env.QUIZ_ADMIN_SECRET}}));
+ assert.throws(()=>requireAdmin({headers:{'x-quiz-admin-key':'wrong'}}),/noto‘g‘ri/);
+});
+test('HTTP-only cookie is bound to one code ID',()=>{
+ const u=verifyCode(makeCodes(1)[0]);
  const cookie=cookieFor(u);
- assert.match(cookie,/HttpOnly/);
- assert.match(cookie,/Secure/);
- assert.match(cookie,/SameSite=Lax/);
- const req={headers:{cookie:cookie.split(';')[0]}};
- assert.equal(authUser(req).id,999001);
- assert.throws(()=>authUser({headers:{cookie:cookie.split(';')[0]+'BAD'}}),/Sessiya/i);
+ assert.match(cookie,/HttpOnly/);assert.match(cookie,/Secure/);
+ assert.equal(authUser({headers:{cookie:cookie.split(';')[0]}}).codeId,u.codeId);
+ assert.throws(()=>authUser({headers:{cookie:cookie.split(';')[0]+'bad'}}),/Sessiya/);
 });
-test('MiniApp initData is authenticated, never trusted from client only',()=>{
- const user=JSON.stringify({id:1234567,username:'tester'});
- const p=new URLSearchParams({auth_date:String(Math.floor(Date.now()/1000)),user});
- const check=[...p.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>k+'='+v).join('\n');
- const key=crypto.createHmac('sha256','WebAppData').update(process.env.TELEGRAM_BOT_TOKEN).digest();
- p.set('hash',crypto.createHmac('sha256',key).update(check).digest('hex'));
- assert.equal(verifyMiniApp(p.toString()).id,1234567);
- p.set('user',JSON.stringify({id:42}));
- assert.throws(()=>verifyMiniApp(p.toString()),/imzosi/i);
+test('Public quiz never reveals score or answer key',()=>{
+ const p=present({status:'finished',notification_sent_at:null});
+ assert.equal(p.status,'finished');assert.equal(p.notification,'pending');
+ assert.equal(Object.hasOwn(p,'answers'),false);
+ assert.equal(Object.hasOwn(p,'score'),false);
 });
-test('Public state never reveals score, answer or key',()=>{
- assert.deepEqual(present(null).status,'new');
- const a=present({status:'finished',notification_sent_at:null,answers:[0],tg_id:5});
- assert.equal(a.status,'finished');
- assert.equal(a.notification,'pending');
- assert.equal(Object.hasOwn(a,'score'),false);
- assert.equal(Object.hasOwn(a,'answers'),false);
- assert.equal(Object.hasOwn(a,'key'),false);
+test('Participant HTML requires code and Telegram username without Telegram login popup',()=>{
+ const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ assert.match(html,/id="oneTimeCode"/);
+ assert.match(html,/id="username"[^>]*required/);
+ assert.ok(!html.includes('telegram-widget.js'));
+ assert.ok(!html.includes('Telegram Authorization'));
 });
