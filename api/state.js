@@ -1,0 +1,2 @@
+import {response,errorResponse,requirePost,authUser,state,present,maybeNotify} from './_lib/server.js';
+export default async function handler(req,res){try{requirePost(req);const u=authUser(req);const row=await state(u);await maybeNotify(row);return response(res,200,present(row));}catch(e){return errorResponse(res,e);}}
