@@ -169,7 +169,7 @@ export async function allAdminResults(){
  const codes=registeredCodes();
  const rows=await Promise.all(codes.map(async code=>{
   const user=verifyCode(code);
-  const base=keyFor(user.codeId,'');
+  const base=PREFIX+'/codes/'+String(user.codeId)+'/';
   const start=await toJSON(base+'start.json');
   if(!start)return {code,status:'unused',participant:null,progress:0,report:null,telegram:'not_applicable'};
 
