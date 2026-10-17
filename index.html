@@ -91,7 +91,7 @@
             <div class="notice info" style="margin-bottom:22px"><b>🎟 4 xonali bir martalik kod</b><p style="margin:8px 0 0;color:#c9d8ce">Tashkilotchi bergan kodni kiriting. Telefon raqami ham, Telegram akkauntiga kirish ham talab qilinmaydi. Kod faqat bir marta ishlaydi.</p></div>
             <div id="formError" class="notice hidden" role="alert"></div>
             <form id="entryForm">
-              <div class="field"><label for="oneTimeCode">Bir martalik kod <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/></svg><input id="oneTimeCode" name="oneTimeCode" required minlength="4" maxlength="4" pattern="[0-9]{4}" inputmode="numeric" placeholder="0000" autocomplete="one-time-code" style="letter-spacing:.22em;font-weight:800;font-size:1.3rem"/></div><small class="hint">Tashkilotchi taqdim etgan 4 xonali kodni kiriting. Kod faqat bir marta ishlaydi.</small></div>
+              <div class="field"><label for="oneTimeCode">Bir martalik kod <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3M12 15v2"/></svg><input id="oneTimeCode" name="oneTimeCode" type="text" required maxlength="32" inputmode="numeric" placeholder="4 xonali kod" autocomplete="off" aria-describedby="codeProgress" style="letter-spacing:.12em;font-weight:800;font-size:1.3rem"/></div><small class="hint" id="codeProgress" aria-live="polite">0/4 raqam kiritildi. Bo‘sh joylar avtomatik olib tashlanadi.</small><small class="hint">Tashkilotchi taqdim etgan 4 xonali kod. Kod faqat bir marta ishlaydi.</small></div>
               <div class="field"><label for="fullname">To‘liq ismingiz <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.6-4.5 3.2-6 7.5-6s6.9 1.5 7.5 6"/></svg><input id="fullname" name="fullname" required minlength="2" maxlength="80" autocomplete="name" placeholder="Ism va familiyangiz"/></div></div>
               <div class="field"><label for="age">Yoshingiz <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 10h18M8 15h3"/></svg><input id="age" name="age" type="number" inputmode="numeric" required min="7" max="100" placeholder="Masalan, 17"/></div></div>
               <div class="field"><label for="username">Telegram username <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m21 3-7.7 18-3.2-7.1L3 10.7 21 3ZM10.1 13.9 21 3"/></svg><input id="username" name="username" required minlength="5" maxlength="33" placeholder="@username" autocomplete="off"/></div><small class="hint">Majburiy: Telegram username’ingizni kiriting, masalan @adabiyotchi. Username Telegram orqali tasdiqlanmaydi.</small></div>
@@ -228,6 +228,14 @@
         },delay);
       }
     }
+    const oneTimeInput=$('oneTimeCode');
+    const codeProgress=$('codeProgress');
+    oneTimeInput.addEventListener('input',()=>{
+      // If a space or formatting was entered, do not let it use up the fourth slot.
+      const clean=oneTimeInput.value.replace(/\D/g,'').slice(0,4);
+      if(oneTimeInput.value!==clean)oneTimeInput.value=clean;
+      codeProgress.textContent=clean.length+'/4 raqam kiritildi'+(clean.length===4?' — tayyor.':'.');
+    });
     $('entryForm').addEventListener('submit',async ev=>{
       ev.preventDefault();if(busy)return;
       $('formError').classList.add('hidden');
@@ -237,7 +245,7 @@
       if(!Number.isInteger(age)||age<7||age>100){error('Yoshingizni to‘g‘ri kiriting (7–100).');return;}
       const code=$('oneTimeCode').value.trim();
       const username=$('username').value.trim().replace(/^@/,'');
-      if(!/^[0-9]{4}$/.test(code)){error('Kod aynan 4 ta raqamdan iborat bo‘lishi kerak.');return;}
+      if(!/^[0-9]{4}$/.test(code)){error('To‘rtta raqamni to‘liq kiriting (masalan, 1234).');$('oneTimeCode').focus();return;}
       if(!/^[A-Za-z0-9_]{5,32}$/.test(username)){error('Telegram username majburiy (@username, 5–32 belgi).');return;}
       if(!$('agree').checked){error('Ishtirok shartlariga rozilik kerak.');return;}
       busy=true;$('startBtn').disabled=true;$('startBtn').textContent='Tekshirilmoqda...';
