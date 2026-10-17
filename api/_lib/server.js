@@ -12,6 +12,12 @@ const codeSecret=()=>{
  if(!s||s.length<20)throw BAD('QUIZ_ADMIN_SECRET hali sozlanmagan.',503);
  return s;
 };
+// This key remains stable across admin password changes; old completed attempts stay recoverable.
+const idSecret=()=>{
+ const s=process.env.QUIZ_ID_SECRET||process.env.QUIZ_ADMIN_SECRET;
+ if(!s||s.length<20)throw BAD('QUIZ_ID_SECRET hali sozlanmagan.',503);
+ return s;
+};
 const configuredCodes=()=>{
  const raw=String(process.env.QUIZ_ACCESS_CODES||'').trim();
  if(!raw)throw BAD('20 ta maxsus kod hali sozlanmagan (QUIZ_ACCESS_CODES).',503);
@@ -29,14 +35,14 @@ export function verifyCode(raw){
  let accepted=false;
  for(const valid of configuredCodes()){const b=Buffer.from(valid);accepted=crypto.timingSafeEqual(a,b)||accepted;}
  if(!accepted)throw BAD('Kod noto‘g‘ri yoki ro‘yxatda yo‘q.',403);
- const codeId=crypto.createHmac('sha256',codeSecret()).update('otp4:'+code).digest('hex').slice(0,40);
+ const codeId=crypto.createHmac('sha256',idSecret()).update('otp4:'+code).digest('hex').slice(0,40);
  return {codeId};
 }
 export function requireAdmin(req){
  const provided=Buffer.from(String(req.headers?.['x-quiz-admin-key']||'')),expected=Buffer.from(codeSecret());
  if(provided.length!==expected.length||!crypto.timingSafeEqual(provided,expected))throw BAD('Administrator kaliti noto‘g‘ri.',403);
 }
-const sessionKey=()=>crypto.createHmac('sha256',codeSecret()).update('tafakkur:code-session:v2').digest();
+const sessionKey=()=>crypto.createHmac('sha256',idSecret()).update('tafakkur:code-session:v2').digest();
 export function cookieFor(u){
  const payload=Buffer.from(JSON.stringify({codeId:u.codeId,exp:Math.floor(Date.now()/1000)+2592000})).toString('base64url');
  const h=crypto.createHmac('sha256',sessionKey()).update(payload).digest('base64url');
