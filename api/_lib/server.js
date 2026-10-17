@@ -66,6 +66,8 @@ export function authUser(req){
  * successful write to an exact pathname counts. No client can erase a try.
  */
 const PREFIX='tafakkur-four-digit-v1';
+const CURRENT_QUESTION_DURATION_MS=15000;
+const PREVIOUS_QUESTION_DURATION_MS=20000;
 const keyFor=(id,part)=>PREFIX+'/codes/'+String(id)+'/'+part+'.json';
 const blobConfig=()=>{if(!process.env.BLOB_READ_WRITE_TOKEN)throw BAD('Vercel Blob hali ulanmagan. Tashkilotchiga xabar bering.',503)};
 const toJSON=async(path)=>{
@@ -88,19 +90,20 @@ async function loadAttempt(u){
  if(!start)return null;
  if(!Number.isFinite(start.startedAt))throw BAD('Urinish vaqti xato.',503);
  const entries=[];
+ const durationMs=start.durationMs===CURRENT_QUESTION_DURATION_MS?CURRENT_QUESTION_DURATION_MS:PREVIOUS_QUESTION_DURATION_MS;
  let started=start.startedAt;
  const NOW=Date.now();
  for(let i=0;i<25;i++){
    const answerPath=keyFor(u.codeId,'answer-'+String(i).padStart(2,'0'));
    let entry=await toJSON(answerPath);
    if(!entry){
-     if(NOW<started+20000)break;
-     const miss={choice:-1,at:started+20000};
+     if(NOW<started+durationMs)break;
+     const miss={choice:-1,at:started+durationMs};
      await putOnce(answerPath,miss);
      entry=await toJSON(answerPath) || miss;
    }
    entries.push(Number.isInteger(entry.choice)&&entry.choice>=-1&&entry.choice<4?entry.choice:-1);
-   started=Math.min(Number(entry.at)||started+20000,started+20000);
+   started=Math.min(Number(entry.at)||started+durationMs,started+durationMs);
  }
  const status=entries.length===25?'finished':'active';
  const delivery=status==='finished'?await toJSON(keyFor(u.codeId,'notification-sent')):null;
@@ -109,7 +112,8 @@ async function loadAttempt(u){
   entered_username:start.entered_username||null,
   answers:entries,question_index:entries.length,
   question_started_at:new Date(started).toISOString(),
-  expires_at:new Date(started+20000).toISOString(),
+  expires_at:new Date(started+durationMs).toISOString(),
+  question_duration_ms:durationMs,
   completed_at:status==='finished'?new Date(started).toISOString():null,
   notification_sent_at:delivery?.at||null
  };
@@ -119,6 +123,7 @@ export async function begin(u,name,age,entered){
  const start={
   code_id:u.codeId,fullname:name,age,
   entered_username:entered||'',
+  durationMs:CURRENT_QUESTION_DURATION_MS,
   startedAt:Date.now()
  };
  const first=await putOnce(keyFor(u.codeId,'start'),start);
@@ -160,7 +165,7 @@ export function present(r){
  if(!Number.isInteger(i)||i<0||i>=25)throw BAD('Savollar holati xato.',503);
  return {status:'active',name:r.fullname,index:i,total:25,
    question:{text:QUESTIONS[i].q,options:QUESTIONS[i].a,world:!!QUESTIONS[i].world},
-   questionStartedAt:r.question_started_at,expiresAt:r.expires_at,serverTime:new Date().toISOString()};
+   questionStartedAt:r.question_started_at,expiresAt:r.expires_at,questionDurationMs:r.question_duration_ms,serverTime:new Date().toISOString()};
 }
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\u0027':'&#39;'}[c]));
 // The key is server-only at runtime (not included in browser HTML).
