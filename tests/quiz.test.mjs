@@ -4,6 +4,7 @@ import {readFileSync} from 'node:fs';
 import {QUESTIONS} from '../api/_lib/questions.js';
 import {verifyCode,registeredCodes,requireAdmin,cookieFor,authUser,present} from '../api/_lib/server.js';
 process.env.QUIZ_ADMIN_SECRET='local_tests_use_long_very_secure_admin_secret_123!';
+process.env.QUIZ_ID_SECRET=process.env.QUIZ_ADMIN_SECRET;
 test('25 questions and 5 world literature',()=>{
  assert.equal(QUESTIONS.length,25);
  assert.equal(QUESTIONS.filter(q=>q.world).length,5);
@@ -22,6 +23,15 @@ test('Exactly 20 configured codes are four-digit and unique',()=>{
 test('Administrator password protects code generation',()=>{
  assert.doesNotThrow(()=>requireAdmin({headers:{'x-quiz-admin-key':process.env.QUIZ_ADMIN_SECRET}}));
  assert.throws(()=>requireAdmin({headers:{'x-quiz-admin-key':'wrong'}}),/noto‘g‘ri/);
+});
+test('Admin password rotation preserves old completed test identities',()=>{
+ const code=registeredCodes()[0];
+ const old=verifyCode(code).codeId;
+ const beforeCookie=cookieFor({codeId:old}).split(';')[0];
+ process.env.QUIZ_ADMIN_SECRET='rotated_long_organizer_password_secret_987654321';
+ assert.equal(verifyCode(code).codeId,old);
+ assert.equal(authUser({headers:{cookie:beforeCookie}}).codeId,old);
+ assert.doesNotThrow(()=>requireAdmin({headers:{'x-quiz-admin-key':process.env.QUIZ_ADMIN_SECRET}}));
 });
 test('HTTP-only cookie is bound to one code ID',()=>{
  const u=verifyCode(registeredCodes()[0]);
