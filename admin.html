@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
+  <script>
+  // This repository is deployed to two Vercel projects. Use the one with
+  // the private code allowlist and the existing one-time result records.
+  if (location.hostname === 'result-redg.vercel.app') {
+    location.replace('https://result-pink-eight.vercel.app' + location.pathname + location.search + location.hash);
+  }
+  </script>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kodlar boshqaruvi — Tafakkur Kutubxonasi</title>
 <meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#111c1b">
