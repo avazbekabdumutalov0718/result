@@ -62,3 +62,19 @@ test('Participant HTML uses 15 seconds and optional Telegram username without Te
  assert.ok(!html.includes('telegram-widget.js'));
  assert.ok(!html.includes('Telegram Authorization'));
 });
+
+test('Mobile layouts provide readable quiz controls and admin result cards',()=>{
+ const page=readFileSync(new URL('../index.html',import.meta.url),'utf8');
+ const admin=readFileSync(new URL('../admin.html',import.meta.url),'utf8');
+ assert.ok(page.includes('@media(max-width:620px)'));
+ assert.ok(page.includes('@media(max-width:365px)'));
+ assert.ok(page.includes('position:sticky;top:env(safe-area-inset-top,0px)'));
+ assert.ok(page.includes('.field input{font-size:16px'));
+ assert.ok(page.includes('.option{min-height:61px'));
+ assert.ok(page.includes('const circumference=207.35;'));
+ assert.ok(admin.includes('viewport-fit=cover'));
+ assert.ok(admin.includes('id="allResultsPanel"'));
+ assert.ok(admin.includes('href="#allResultsPanel"'));
+ assert.ok(admin.includes('#allResultsTable tbody tr{'));
+ assert.ok(admin.includes('td.dataset.label=labels[i]'));
+});
