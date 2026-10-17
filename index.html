@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#11171a" />
+  <meta name="description" content="Tafakkur kutubxonasi — 25 savollik adabiyot bilimi sinovi." />
+  <title>Tafakkur | Adabiyot bilimi sinovi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://telegram.org/js/telegram-web-app.js?64"></script>
+  <style>
+    :root{--bg:#0d1417;--bg2:#111c1e;--card:#192528;--line:rgba(238,232,211,.12);--text:#f6f2e8;--muted:#aab6b1;--accent:#e5c991;--mint:#93d3b3;--red:#fcaa9b;--font:'Manrope',sans-serif;}
+    *{box-sizing:border-box}html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);min-height:100vh;line-height:1.55;overflow-x:hidden}
+    body::before{content:'';position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 48vw 58vw at 0% 9%,rgba(52,116,91,.22),transparent 75%),radial-gradient(ellipse 53vw 60vw at 110% 100%,rgba(189,141,65,.12),transparent 74%);z-index:-2}
+    body::after{content:'';position:fixed;inset:0;opacity:.065;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.8'/%3E%3C/svg%3E");pointer-events:none;z-index:-1}
+    button,input{font:inherit} button{cursor:pointer}button:disabled{cursor:not-allowed;opacity:.55}a{color:inherit} .hidden{display:none!important}
+    .wrap{max-width:1180px;padding:0 34px;margin:auto}.topnav{height:102px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid rgba(233,225,198,.08)}
+    .brand{display:flex;align-items:center;gap:13px;text-decoration:none}.mark{width:48px;height:48px;border:1px solid rgba(229,201,145,.45);border-radius:14px;display:grid;place-items:center;background:linear-gradient(155deg,rgba(246,218,165,.14),rgba(229,201,145,.02));color:var(--accent)}
+    .mark svg{width:27px;height:27px}.brand-text{display:flex;flex-direction:column;gap:0}.brand-text b{font-weight:800;letter-spacing:.18em;font-size:16px}.brand-text small{font-size:9px;font-weight:800;color:var(--accent);letter-spacing:.27em;text-transform:uppercase}
+    .navtag{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;border:1px solid rgba(229,201,145,.2);border-radius:100px;padding:10px 17px;color:var(--accent)}
+    main{padding:58px 0 66px;min-height:calc(100vh - 174px)} .intro-layout{display:grid;grid-template-columns:1.07fr .93fr;gap:60px;align-items:center;min-height:655px}
+    .eyebrow{display:inline-flex;align-items:center;gap:12px;color:var(--accent);text-transform:uppercase;letter-spacing:.22em;font-size:11px;font-weight:800}.eyebrow::before{content:'';width:27px;height:1px;background:var(--accent)}
+    .hero h1{font-size:clamp(45px,5vw,76px);line-height:1.095;letter-spacing:-.065em;margin:23px 0 23px;font-weight:800}.hero h1 em{font-style:normal;font-family:Georgia,serif;font-weight:400;letter-spacing:-.048em;color:var(--accent)}
+    .hero p{font-size:15px;max-width:510px;line-height:1.95;color:var(--muted);margin:0}
+    .stats{display:flex;gap:12px;margin-top:38px}.stat{flex:1;max-width:158px;padding:19px 17px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.022)}.stat .num{font-family:'DM Sans',sans-serif;font-size:31px;font-weight:700;letter-spacing:-.055em;color:var(--accent);line-height:1}.stat small{display:block;color:var(--muted);font-size:10px;margin-top:8px;letter-spacing:.055em}
+    .quote{display:flex;gap:15px;align-items:center;margin-top:43px}.quote .qline{width:2px;height:52px;background:linear-gradient(var(--accent),transparent)}.quote p{font-size:12px;font-style:italic;line-height:1.75;max-width:330px}.quote span{color:var(--accent);font-style:normal}
+    .form-panel{position:relative}.form-panel::before{content:'';position:absolute;inset:-17px;border:1px solid rgba(229,201,145,.13);border-radius:28px;z-index:-1}.form-card{background:linear-gradient(155deg,#1d2b2d 0%,#162225 80%);border:1px solid rgba(229,201,145,.19);box-shadow:0 25px 100px rgba(0,0,0,.17);border-radius:23px;padding:37px}
+    .form-icon{display:grid;place-items:center;width:51px;height:51px;border-radius:15px;border:1px solid rgba(229,201,145,.22);background:rgba(229,201,145,.07);color:var(--accent)}
+    .form-icon svg{width:25px;height:25px}.form-card h2{font-size:27px;margin:24px 0 7px;letter-spacing:-.05em;line-height:1.3}.subtitle{color:var(--muted);font-size:12px;line-height:1.8;margin:0 0 29px}
+    .field{display:flex;flex-direction:column;gap:8px;margin-bottom:19px}.field label{font-size:11px;font-weight:800;letter-spacing:.04em;color:#e6e6db}.field label span{color:var(--accent)}.field .input-wrap{position:relative}.field .input-wrap .field-icon{position:absolute;width:19px;height:19px;top:50%;transform:translateY(-50%);left:16px;color:#9cadab;pointer-events:none}
+    .field input{width:100%;height:53px;outline:0;padding:0 15px 0 47px;background:#121e20;border:1px solid #374747;border-radius:11px;color:#fff;font-size:13px;transition:border .2s,box-shadow .2s}.field input::placeholder{color:#728583}.field input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(229,201,145,.08)}
+    .hint{font-size:10px;color:#94a7a3;margin-top:0}.checkline{display:flex;align-items:flex-start;gap:10px;font-size:11px;color:#b4c3ba;line-height:1.7;margin:24px 0 21px;cursor:pointer}.checkline input{accent-color:var(--accent);margin-top:3px;width:16px;height:16px;flex-shrink:0}
+    .btn-primary{display:flex;align-items:center;justify-content:center;gap:12px;width:100%;min-height:54px;border:0;border-radius:11px;background:var(--accent);color:#1c2423;font-weight:800;font-size:13px;box-shadow:0 9px 28px rgba(229,201,145,.11);transition:transform .2s,filter .2s}.btn-primary:not(:disabled):hover{transform:translateY(-2px);filter:brightness(1.07)}.btn-primary svg{width:17px;height:17px}.tinylock{display:flex;align-items:center;justify-content:center;gap:7px;color:#8da099;font-size:10px;margin-top:17px}.tinylock svg{width:13px;height:13px}
+    .notice{padding:12px 14px;font-size:11px;line-height:1.7;border-radius:10px;background:rgba(252,170,155,.07);border:1px solid rgba(252,170,155,.25);color:#ffb8ac;margin-bottom:18px}.notice.info{color:#cedcd4;background:rgba(147,211,179,.06);border-color:rgba(147,211,179,.22)} .notice a{text-decoration:underline;color:var(--accent)}
+    footer{max-width:1180px;margin:auto;padding:24px 34px 33px;border-top:1px solid rgba(233,225,198,.09);display:flex;align-items:center;justify-content:space-between;gap:16px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:#80948e}
+    footer strong{font-size:10px;color:#a7b6ab;font-weight:800}
+    .quiz-layout{max-width:850px;margin:6px auto 0;animation:up .45s ease both}.quiz-top{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:28px}.pill{display:flex;align-items:center;gap:9px;font-size:10px;font-weight:800;color:var(--accent);text-transform:uppercase;letter-spacing:.14em}.green-dot{width:7px;height:7px;display:inline-block;background:var(--mint);box-shadow:0 0 0 5px rgba(147,211,179,.09);border-radius:50%}.quiz-user{font-size:11px;color:var(--muted)}
+    .qmeta{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:13px}.qmeta b{font-size:12px;letter-spacing:.05em;color:var(--accent)}.qmeta small{color:#91a29e;font-size:11px}.progress{width:100%;height:7px;background:#263436;border-radius:100px;overflow:hidden}.progress-bar{width:0;height:100%;border-radius:100px;background:linear-gradient(90deg,#adca9d,var(--accent));transition:width .35s ease}
+    .qcard{position:relative;overflow:hidden;border:1px solid rgba(229,201,145,.18);background:linear-gradient(150deg,#1d2c2f,#162224);border-radius:24px;margin-top:27px;padding:36px 39px 37px;box-shadow:0 24px 65px rgba(0,0,0,.16)}
+    .qhead{display:flex;align-items:center;justify-content:space-between;gap:13px;margin-bottom:28px}.qtype{display:inline-flex;align-items:center;gap:8px;border-radius:6px;border:1px solid #405151;padding:8px 12px;color:#c8d7c8;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em}.qtype.world{border-color:rgba(229,201,145,.3);color:var(--accent)}
+    .timer{position:relative;width:80px;height:80px;display:grid;place-items:center;flex-shrink:0}.timer svg{position:absolute;inset:0;width:80px;height:80px;transform:rotate(-90deg)}.timer circle{fill:none;stroke:#405151;stroke-width:5}.timer #timer-ring{stroke:var(--mint);stroke-dasharray:207.35;stroke-dashoffset:0;stroke-linecap:round;transition:stroke .15s}.timer.soon #timer-ring{stroke:#f8c28d}.timer.danger #timer-ring{stroke:var(--red)}.timer strong{font-family:'DM Sans',sans-serif;font-size:27px;line-height:1;letter-spacing:-.05em;font-weight:800}.timer small{font-size:8px;letter-spacing:.13em;text-transform:uppercase;color:#9fb0aa;position:absolute;top:52px}
+    .qindex{color:#8da39a;text-transform:uppercase;font-size:11px;letter-spacing:.19em;font-weight:800;margin:0 0 14px}.qcard h2{font-size:clamp(21px,3vw,30px);letter-spacing:-.035em;line-height:1.52;font-weight:800;margin:0 0 30px;max-width:700px;min-height:78px}
+    .optionlist{display:grid;grid-template-columns:1fr 1fr;gap:12px}.option{display:flex;text-align:left;align-items:center;gap:15px;width:100%;min-height:75px;border:1px solid #344548;border-radius:13px;background:#142124;color:#eef2e9;padding:14px 15px;transition:background .15s,border-color .15s,transform .15s}.option:not(:disabled):hover{border-color:rgba(229,201,145,.6);background:#233334;transform:translateY(-1px)}.option .letter{display:grid;place-items:center;width:36px;height:36px;border:1px solid #52645f;border-radius:10px;flex-shrink:0;color:var(--accent);font-size:12px;font-weight:800}.option .otxt{line-height:1.5;font-size:12px;font-weight:700}.option.chosen{background:#344a40;border-color:var(--mint)}.option.chosen .letter{background:var(--mint);color:#183329;border-color:var(--mint)}
+    .qcard-bottom{margin-top:26px;padding-top:20px;border-top:1px solid var(--line);display:flex;gap:9px;align-items:center;color:#97a9a3;font-size:10px}.qcard-bottom svg{width:14px;height:14px;flex-shrink:0;color:var(--accent)}
+    .waiting{display:none;position:absolute;inset:0;background:rgba(17,27,29,.81);z-index:3;align-items:center;justify-content:center;gap:13px;font-size:13px;font-weight:700}.waiting.show{display:flex}.spinner{border:3px solid rgba(229,201,145,.2);border-top-color:var(--accent);width:23px;height:23px;border-radius:50%;animation:spin .75s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .result-shell{max-width:620px;margin:20px auto 0;text-align:center;border:1px solid rgba(229,201,145,.2);background:linear-gradient(160deg,#1c2a2c,#142123);border-radius:26px;padding:52px 39px 44px;box-shadow:0 40px 90px rgba(0,0,0,.2);animation:up .5s ease both}
+    .result-emblem{width:78px;height:78px;display:grid;place-items:center;margin:auto;border-radius:50%;background:rgba(229,201,145,.09);border:1px solid rgba(229,201,145,.28);color:var(--accent)}.result-emblem svg{width:37px;height:37px}
+    .result-shell h2{font-size:34px;letter-spacing:-.055em;margin:25px 0 10px}.result-shell p{color:#aabcaf;font-size:12px;line-height:1.85;margin:0}.score{font:800 75px/1 'DM Sans',sans-serif;color:var(--accent);letter-spacing:-.095em;margin:26px 0 13px}.score span{font-size:27px;color:#94a59f;letter-spacing:-.045em}.result-metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:29px 0}.metric{padding:16px 10px;background:rgba(255,255,255,.025);border:1px solid var(--line);border-radius:13px}.metric b{display:block;font-size:23px;line-height:1.2}.metric small{font-size:9px;color:#9aaca3;margin-top:7px;display:block;text-transform:uppercase;letter-spacing:.09em}.metric:nth-child(1) b{color:#9bd9b5}.metric:nth-child(2) b{color:var(--red)}.metric:nth-child(3) b{color:var(--accent)}
+    .final-info{border:1px solid rgba(229,201,145,.16);border-radius:12px;background:rgba(229,201,145,.04);padding:16px;color:#d4cdb8;font-size:11px;line-height:1.85}.ghost-btn{margin:21px auto 0;border:1px solid #52635e;border-radius:10px;padding:11px 20px;background:transparent;color:#cad7ca;font-weight:700;font-size:11px}.ghost-btn:hover{border-color:var(--accent)}
+    .brand-decoration{position:absolute;top:-95px;right:-70px;width:280px;height:280px;pointer-events:none;border:1px solid rgba(229,201,145,.1);border-radius:50%;box-shadow:0 0 0 40px rgba(229,201,145,.015),0 0 0 79px rgba(229,201,145,.013)}
+    .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%);padding:13px 19px;max-width:calc(100vw - 28px);border-radius:10px;background:#3c2c2c;border:1px solid #a65e5e;color:#ffddd4;font-size:12px;z-index:100;box-shadow:0 16px 45px #0008;text-align:center;animation:up .25s ease}
+    @keyframes up{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+    .private-notice{display:flex;align-items:center;gap:17px;text-align:left;margin:30px 0 18px;background:linear-gradient(100deg,rgba(109,200,158,.10),rgba(229,201,145,.055));border:1px solid rgba(147,211,179,.27);border-radius:17px;padding:18px 19px}
+    .private-ico{font-size:25px;display:grid;place-items:center;width:49px;height:49px;flex-shrink:0;border-radius:14px;background:rgba(147,211,179,.11)}
+    .private-notice b{display:block;color:#dcefe1;font-size:14px;letter-spacing:.01em}
+    .private-notice small{display:block;color:#b0c4b9;font-size:11px;line-height:1.6;margin-top:3px}
+    @media(max-width:900px){.intro-layout{gap:38px;grid-template-columns:1fr 1fr}.hero h1{font-size:49px}.form-card{padding:27px}.wrap{padding:0 24px}}
+    @media(max-width:720px){.topnav{height:78px}.mark{width:40px;height:40px;border-radius:11px}.brand-text b{font-size:13px}.brand-text small{font-size:8px}.navtag{font-size:9px;padding:8px 12px}.wrap{padding:0 20px}main{padding:32px 0 48px}.intro-layout{grid-template-columns:1fr;gap:46px;min-height:auto}.hero h1{font-size:49px}.hero p{font-size:13px}.stats{margin-top:25px}.stat{padding:16px 12px}.quote{display:none}.form-panel::before{inset:-9px}.form-card{padding:26px 24px}.form-card h2{font-size:25px}.qcard{padding:26px 22px}.optionlist{grid-template-columns:1fr}.option{min-height:65px}.qcard h2{font-size:23px;min-height:0}.qhead{margin-bottom:20px}.timer,.timer svg{width:69px;height:69px}.timer strong{font-size:23px}.timer small{top:45px;font-size:7px}.timer circle{cx:34.5;cy:34.5;r:30}.timer #timer-ring{stroke-dasharray:188.5}.quiz-top{margin-bottom:25px}.result-shell{padding:42px 21px 30px}.result-shell h2{font-size:29px}.score{font-size:64px}footer{padding:20px 20px 24px;flex-direction:column;gap:7px;align-items:flex-start}}
+    @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header class="topnav">
+      <a class="brand" href="#" aria-label="Tafakkur bosh sahifa">
+        <span class="mark"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.45"><path d="M16 8c-4.7-3.4-9.2-3.5-13-2v18c4-1.5 8.3-1.3 13 2 4.7-3.3 9-3.5 13-2V6c-3.8-1.5-8.3-1.4-13 2Z"/><path d="M16 8v18M6 11c2.5-.4 4.8.2 7 1.7M19 12.7c2.2-1.5 4.5-2.1 7-1.7"/></svg></span>
+        <span class="brand-text"><b>TAFAKKUR</b><small>Kutubxonasi</small></span>
+      </a>
+      <span class="navtag">Adabiyot • 2026</span>
+    </header>
+    <main>
+      <section id="intro" class="intro-layout">
+        <div class="hero">
+          <div class="eyebrow">Bilimlar bellashuvi</div>
+          <h1>Kitob — <br/><em>tafakkur</em><br/>kaliti.</h1>
+          <p>O‘zbek va jahon adabiyotining eng sara asarlaridan tuzilgan intellektual sinov. Har bir savol sizni yangi bilimlar sari yetaklaydi.</p>
+          <div class="stats">
+            <div class="stat"><div class="num">25</div><small>Adabiy savol</small></div>
+            <div class="stat"><div class="num">20<span style="font-size:14px;letter-spacing:0">s</span></div><small>Har bir savolga</small></div>
+            <div class="stat"><div class="num">1×</div><small>Yagona urinish</small></div>
+          </div>
+          <div class="quote"><div class="qline"></div><p>“Kitobxonlik — ma’naviy dunyoni boyitadigan eng go‘zal odat.” <span>✦ Tafakkur kutubxonasi</span></p></div>
+        </div>
+        <div class="form-panel">
+          <div class="form-card">
+            <div class="form-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="5"/><path d="m8 12 2.7 2.7L16.7 9"/></svg></div>
+            <h2>Bilimingizni sinang</h2>
+            <p class="subtitle">Boshlash uchun ma’lumotlaringizni kiriting. Ism va yosh majburiy; natijangiz faqat tashkilotchiga ko‘rinadi.</p>
+            <div id="tgWarning" class="notice info hidden" style="margin-bottom:20px"><b>Telegram orqali tasdiqlang</b><p style="margin:8px 0 12px;color:#c8d6d0">Testni ushbu Vercel havolasidan ishlashingiz mumkin. Bir martalik urinishni himoya qilish uchun Telegram akkauntingiz bilan kiring. Botga /start yuborishingiz shart emas.</p><div id="tgLoginMount" style="min-height:47px"></div><small id="authStatus" style="display:block;margin-top:10px;color:#9fb3a9"></small></div>
+            <div id="formError" class="notice hidden" role="alert"></div>
+            <form id="entryForm">
+              <div class="field"><label for="fullname">To‘liq ismingiz <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4.5 20c.6-4.5 3.2-6 7.5-6s6.9 1.5 7.5 6"/></svg><input id="fullname" name="fullname" required minlength="2" maxlength="80" autocomplete="name" placeholder="Ism va familiyangiz"/></div></div>
+              <div class="field"><label for="age">Yoshingiz <span>*</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M7 3v4M17 3v4M3 10h18M8 15h3"/></svg><input id="age" name="age" type="number" inputmode="numeric" required min="7" max="100" placeholder="Masalan, 17"/></div></div>
+              <div class="field"><label for="username">Telegram username <span style="color:#9cafa7;font-weight:500">(ixtiyoriy)</span></label><div class="input-wrap"><svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m21 3-7.7 18-3.2-7.1L3 10.7 21 3ZM10.1 13.9 21 3"/></svg><input id="username" name="username" maxlength="33" placeholder="@username" autocomplete="off"/></div><small class="hint">Telegram ID avtomatik tekshiriladi, username bo‘lmasa ham bo‘ladi.</small></div>
+              <label class="checkline"><input id="agree" type="checkbox" required/><span>Testni <b>faqat bir marta</b> topshirishimni va natijam <b>faqat tashkilotchiga</b> yuborilishini tushundim.</span></label>
+              <button id="startBtn" type="submit" class="btn-primary">Testni boshlash <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+            </form>
+            <div class="tinylock"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg> Telegram orqali himoyalangan test</div>
+          </div>
+        </div>
+      </section>
+      <section id="quiz" class="quiz-layout hidden" aria-live="polite">
+        <div class="quiz-top"><div class="pill"><span class="green-dot"></span> Test davom etmoqda</div><span class="quiz-user" id="quizName"></span></div>
+        <div class="qmeta"><b id="qNumber">Savol 01 / 25</b><small id="qProgressLabel">0% bajarildi</small></div>
+        <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+        <div class="qcard">
+          <div class="brand-decoration"></div>
+          <div class="qhead">
+            <span id="qCategory" class="qtype">O‘zbek adabiyoti</span>
+            <div class="timer" id="timer" aria-label="Savol vaqti"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="33"/><circle id="timer-ring" cx="40" cy="40" r="33"/></svg><strong id="timerValue">20</strong><small>soniya</small></div>
+          </div>
+          <p class="qindex" id="qHeading">01 — SAVOL</p>
+          <h2 id="qText"></h2>
+          <div class="optionlist" id="options"></div>
+          <div class="qcard-bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-11v1"/></svg><span>Javobni tanlang. 20 soniya tugasa, savol avtomatik o‘tkaziladi.</span></div>
+          <div class="waiting" id="waiting"><div class="spinner"></div><span>Javob saqlanmoqda...</span></div>
+        </div>
+      </section>
+      <section id="result" class="result-shell hidden" aria-live="polite">
+        <div class="result-emblem" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 3 27 8v8c0 6-4.4 10.4-11 13C9.4 26.4 5 22 5 16V8L16 3Z"/><path d="m10.5 16 4 4 7-8"/></svg></div>
+        <div class="eyebrow" style="justify-content:center;margin-top:21px" id="resultSub">Yagona urinish yakunlandi</div>
+        <h2 id="resultHeading">Test yakunlandi!</h2>
+        <p id="resultIntro">Ishtirokingiz uchun rahmat! Sizning natijangiz maxfiy saqlanadi va faqat tashkilotchiga yuboriladi.</p>
+        <div class="private-notice" role="status"><span class="private-ico">🔐</span><div><b>Natija maxfiy</b><small>Ballar, to‘g‘ri va noto‘g‘ri javoblar bu sahifada ko‘rsatilmaydi.</small></div></div>
+        <div class="final-info" id="deliveryNote"><b>📨 Natija yuborilmoqda.</b><br/>Natija faqat tashkilotchi hisobiga jo‘natiladi.</div>
+        <div class="final-info" style="margin-top:12px"><b>🔒 Qayta topshirish bloklangan.</b><br/>Ushbu Telegram akkaunti bilan testni boshqa qurilmadan ham qaytadan boshlay olmaysiz.</div>
+        <a class="ghost-btn" style="display:inline-block;text-decoration:none" href="https://t.me/Tafakkur_kutubxonasi_result_bot" target="_blank" rel="noopener noreferrer">Telegram botiga qaytish ↗</a>
+      </section>
+    </main>
+  </div>
+  <footer><strong>TAFAKKUR KUTUBXONASI</strong><span>Bilim • Tafakkur • Kamolot</span><span>© 2026</span></footer>
+  <div id="toast" role="alert" class="toast hidden"></div>
+  <script>
+  (()=>{
+    'use strict';
+    const $=id=>document.getElementById(id);
+    const tg=window.Telegram?.WebApp;
+    const initData=String(tg?.initData||'');
+    let active=null, busy=false, timerInterval=null, offset=0, failedRequests=0, authReady=!!initData;
+    const TOTAL=25, DURATION=20000;
+    if(tg){try{tg.ready();tg.expand();tg.setHeaderColor('#0d1417');tg.setBackgroundColor('#0d1417')}catch{}}
+    if(tg?.initDataUnsafe?.user?.username){$('username').value='@'+tg.initDataUnsafe.user.username;}
+    if(!initData) {
+      $('tgWarning').classList.remove('hidden');
+      window.onTelegramAuth=async function(tgUser){
+        $('authStatus').textContent='Telegram tekshirilmoqda…';
+        try{
+          const r=await fetch('/api/login',{method:'POST',headers:{'Content-Type':'application/json'},credentials:'same-origin',body:JSON.stringify(tgUser)});
+          const data=await r.json().catch(()=>({}));
+          if(!r.ok)throw new Error(data.error||'Telegram tasdiqlashda xatolik');
+          authReady=true; $('tgWarning').classList.add('hidden');
+          if(tgUser.username)$('username').value='@'+tgUser.username;
+          await restore();
+        }catch(e){$('authStatus').textContent=e.message;}
+      };
+      const loginScript=document.createElement('script');
+      loginScript.async=true;
+      loginScript.src='https://telegram.org/js/telegram-widget.js?22';
+      loginScript.setAttribute('data-telegram-login','Tafakkur_kutubxonasi_result_bot');
+      loginScript.setAttribute('data-size','large');
+      loginScript.setAttribute('data-radius','10');
+      loginScript.setAttribute('data-userpic','false');
+      loginScript.setAttribute('data-request-access','write');
+      loginScript.setAttribute('data-onauth','onTelegramAuth(user)');
+      $('tgLoginMount').appendChild(loginScript);
+    }
+    function show(screen){for(const s of ['intro','quiz','result'])$(s).classList.toggle('hidden',s!==screen);window.scrollTo({top:0,behavior:'instant'});}
+    function tell(msg){const el=$('toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(tell.t);tell.t=setTimeout(()=>el.classList.add('hidden'),5500);}
+    function error(msg){$('formError').textContent=msg;$('formError').classList.remove('hidden');}
+    async function request(path,body={}){
+      if(!authReady)throw new Error('Avval Telegram akkauntingizni tasdiqlang.');
+      let resp;
+      try{resp=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json',...(initData?{'X-Telegram-Init-Data':initData}:{})},credentials:'same-origin',body:JSON.stringify(body),cache:'no-store'});}catch{throw new Error('Internet bilan aloqa yo‘q. Ulanishni tekshiring.');}
+      const data=await resp.json().catch(()=>({}));
+      if(!resp.ok)throw new Error(data.error||'Noma’lum server xatoligi.');
+      failedRequests=0;return data;
+    }
+    function setBusy(flag){busy=flag;$('waiting').classList.toggle('show',flag);for(const b of $('options').querySelectorAll('button')) b.disabled=flag;}
+    function clearTick(){if(timerInterval){clearInterval(timerInterval);timerInterval=null;}}
+    function applyState(data){
+      clearTick();setBusy(false);
+      if(data.status==='new'){show('intro');return;}
+      if(data.status==='finished'){active=null;showResult(data);return;}
+      if(data.status!=='active'||!data.question){tell('Test holati topilmadi.');return;}
+      active=data;
+      offset=Date.now()-Date.parse(data.serverTime);
+      show('quiz');
+      $('quizName').textContent=data.name||'';
+      $('qNumber').textContent=`Savol ${String(data.index+1).padStart(2,'0')} / ${TOTAL}`;
+      $('qProgressLabel').textContent=`${Math.round(data.index/TOTAL*100)}% bajarildi`;
+      $('progressBar').style.width=`${data.index/TOTAL*100}%`;
+      $('qHeading').textContent=`${String(data.index+1).padStart(2,'0')} — SAVOL`;
+      $('qCategory').textContent=data.question.world?'Jahon adabiyoti':'O‘zbek adabiyoti';
+      $('qCategory').classList.toggle('world',!!data.question.world);
+      $('qText').textContent=data.question.text;
+      $('options').replaceChildren();
+      data.question.options.forEach((option,j)=>{
+        const b=document.createElement('button');b.type='button';b.className='option';
+        const letter=document.createElement('span');letter.className='letter';letter.textContent='ABCD'[j];
+        const text=document.createElement('span');text.className='otxt';text.textContent=option;
+        b.append(letter,text);
+        b.addEventListener('click',()=>{b.classList.add('chosen');void sendAnswer(j)});
+        $('options').appendChild(b);
+      });
+      timerInterval=setInterval(tick,70);tick();
+    }
+    function tick(){
+      if(!active||busy)return;
+      const elapsed=Date.now()-offset-Date.parse(active.questionStartedAt);
+      const left=Math.max(0,DURATION-elapsed);
+      const n=Math.ceil(left/1000);
+      $('timerValue').textContent=n;
+      const ratio=left/DURATION;
+      // Desktop (r=33) / phone (r=30) layouts, adjusted from viewport width.
+      const circumference=window.matchMedia('(max-width:720px)').matches?188.5:207.35;
+      const ring=$('timer-ring');ring.style.strokeDasharray=String(circumference);ring.style.strokeDashoffset=String(circumference*(1-ratio));
+      $('timer').classList.toggle('soon',n<=10&&n>5);$('timer').classList.toggle('danger',n<=5);
+      if(left<=0){void sendAnswer(-1)}
+    }
+    async function sendAnswer(choice){
+      if(!active||busy)return;
+      const currentIndex=active.index;
+      clearTick();setBusy(true);
+      try{
+        const data=await request('/api/answer',{index:currentIndex,choice});
+        applyState(data);
+      }catch(e){
+        setBusy(false);failedRequests++;
+        tell(e.message+' Qayta ulanilmoqda...');
+        const prev=active;
+        // Server holatini qayta o'qish — har qanday qayta urinish taymerni yangilamaydi.
+        setTimeout(async()=>{
+          try{const d=await request('/api/state');applyState(d)}
+          catch(err){tell(err.message); if(prev){active=prev;timerInterval=setInterval(tick,120);}}
+        },Math.min(1800*failedRequests,5000));
+      }
+    }
+    let retryId=null, retryCount=0;
+    function showResult(data){
+      show('result');
+      $('resultHeading').textContent='Test yakunlandi!';
+      $('resultSub').textContent='Yagona urinish yakunlandi';
+      const delivered=data.notification==='sent';
+      $('deliveryNote').innerHTML=delivered
+        ? '<b>✅ Natija tashkilotchiga yuborildi.</b><br/>Natijangiz faqat tashkilotchi Telegram chatiga jo‘natildi.'
+        : '<b>📨 Natija saqlandi.</b><br/>Telegramga yuborish qayta tekshirilmoqda. Natija bu yerda oshkor etilmaydi.';
+      if(retryId){clearTimeout(retryId);retryId=null;}
+      if(!delivered && retryCount<4){
+        const delay=[2000,5000,10000,15000][retryCount++];
+        retryId=setTimeout(async()=>{
+          try{const fresh=await request('/api/state');if(fresh.status==='finished')showResult(fresh)}
+          catch{ /* Natija bazada qoladi; server qayta ochilganda yuborishga urinadi. */ }
+        },delay);
+      }
+    }
+    $('entryForm').addEventListener('submit',async ev=>{
+      ev.preventDefault();if(busy)return;
+      $('formError').classList.add('hidden');
+      if(!authReady){error('Avval yuqoridagi Telegram tasdiqlash tugmasini bosing.');return;}
+      const name=$('fullname').value.trim().replace(/\s+/g,' ');
+      const age=Number($('age').value);
+      if(name.length<2||name.length>80){error('To‘liq ism kiriting (2–80 belgi).');return;}
+      if(!Number.isInteger(age)||age<7||age>100){error('Yoshingizni to‘g‘ri kiriting (7–100).');return;}
+      if(!$('agree').checked){error('Ishtirok shartlariga rozilik kerak.');return;}
+      busy=true;$('startBtn').disabled=true;$('startBtn').textContent='Tekshirilmoqda...';
+      try{const data=await request('/api/start',{name,age,telegramUsername:$('username').value.trim()});applyState(data)}
+      catch(e){error(e.message)}
+      finally{busy=false;$('startBtn').disabled=false;$('startBtn').textContent='Testni boshlash →';}
+    });
+    window.addEventListener('visibilitychange',()=>{if(!document.hidden && active&&!busy){tick()}});
+    async function restore(){
+      if(!authReady)return;
+      try{const data=await request('/api/state');applyState(data)}
+      catch(e){tell(e.message)}
+    }
+    restore();
+  })();
+  </script>
+</body>
+</html>
