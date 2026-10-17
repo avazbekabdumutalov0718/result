@@ -6,60 +6,59 @@ const secret=()=>{const t=process.env.TELEGRAM_BOT_TOKEN;if(!t)throw BAD('Botnin
 export function response(res,code,obj){res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');return res.status(code).json(obj);}
 export function errorResponse(res,e){console.error('[quiz]',e.message);return response(res,e.status||500,{error:e.status?e.message:'Server sozlamalarida xatolik. Tashkilotchiga murojaat qiling.'});}
 export function requirePost(req){if(req.method!=='POST')throw BAD('Faqat POST ruxsat etiladi.',405);}
-function equalHex(expected,sent){
- if(!/^[a-f0-9]{64}$/i.test(String(sent||'')))return false;
- const b=Buffer.from(sent,'hex');return b.length===expected.length&&crypto.timingSafeEqual(expected,b);
+
+const codeSecret=()=>{
+ const s=process.env.QUIZ_ADMIN_SECRET;
+ if(!s||s.length<20)throw BAD('QUIZ_ADMIN_SECRET hali sozlanmagan.',503);
+ return s;
+};
+const ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+export function makeCodes(n){
+ if(!Number.isInteger(n)||n<1||n>100)throw BAD('Kod soni 1–100 oralig‘ida bo‘lsin.',400);
+ return Array.from({length:n},()=>{
+  let body='';
+  for(const byte of crypto.randomBytes(10))body+=ALPHABET[byte%32];
+  return 'TK-'+body+'-'+crypto.createHmac('sha256',codeSecret()).update('code:'+body).digest('hex').slice(0,8).toUpperCase();
+ });
 }
-export function verifyMiniApp(raw){
- if(!raw||typeof raw!=='string'||raw.length>8192)throw BAD('Telegram Mini App tasdig‘i yo‘q.');
- const p=new URLSearchParams(raw),hash=p.get('hash'),t=Number(p.get('auth_date')),now=Math.floor(Date.now()/1000);
- if(!Number.isInteger(t)||t>now+60||now-t>86400)throw BAD('Telegram sessiya muddati tugagan. Sahifani qayta oching.');
- p.delete('hash');p.delete('signature');
- const check=[...p.entries()].sort(([a],[b])=>a.localeCompare(b)).map(([k,v])=>k+'='+v).join('\n');
- const key=crypto.createHmac('sha256','WebAppData').update(secret()).digest();
- if(!equalHex(crypto.createHmac('sha256',key).update(check).digest(),hash))throw BAD('Telegram imzosi yaroqsiz.');
- let u;try{u=JSON.parse(p.get('user')||'null')}catch{}
- if(!Number.isSafeInteger(u?.id)||u.id<=0)throw BAD('Telegram akkaunti aniqlanmadi.');
- return {id:u.id,username:String(u.username||''),first_name:String(u.first_name||'')};
+export function verifyCode(raw){
+ const code=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
+ const m=/^TK-([A-HJ-NP-Z2-9]{10})-([A-F0-9]{8})$/.exec(code);
+ if(!m)throw BAD('Bir martalik kod formati noto‘g‘ri.',400);
+ const expected=crypto.createHmac('sha256',codeSecret()).update('code:'+m[1]).digest().subarray(0,4);
+ const actual=Buffer.from(m[2],'hex');
+ if(actual.length!==expected.length||!crypto.timingSafeEqual(expected,actual))throw BAD('Kod noto‘g‘ri.',403);
+ return {codeId:crypto.createHash('sha256').update(code).digest('hex').slice(0,40)};
 }
-export function verifyWidget(u){
- if(!u||typeof u!=='object')throw BAD('Telegram kirish ma’lumotlari yo‘q.');
- const now=Math.floor(Date.now()/1000),t=Number(u.auth_date);
- if(!Number.isInteger(t)||t>now+60||now-t>3600)throw BAD('Kirish muddati tugagan. Qayta tasdiqlang.');
- if(!Number.isSafeInteger(Number(u.id))||Number(u.id)<=0)throw BAD('Telegram ID xato.');
- const allowed=['id','first_name','last_name','username','photo_url','auth_date'];
- const check=allowed.filter(k=>u[k]!==undefined&&u[k]!==null).sort().map(k=>k+'='+String(u[k])).join('\n');
- const digest=crypto.createHash('sha256').update(secret()).digest();
- if(!equalHex(crypto.createHmac('sha256',digest).update(check).digest(),u.hash))throw BAD('Telegram login tasdig‘i yaroqsiz.');
- return {id:Number(u.id),username:String(u.username||''),first_name:String(u.first_name||'')};
+export function requireAdmin(req){
+ const provided=Buffer.from(String(req.headers?.['x-quiz-admin-key']||'')),expected=Buffer.from(codeSecret());
+ if(provided.length!==expected.length||!crypto.timingSafeEqual(provided,expected))throw BAD('Administrator kaliti noto‘g‘ri.',403);
 }
-const sessionKey=()=>crypto.createHmac('sha256',secret()).update('tafakkur:browser-session:v1').digest();
+const sessionKey=()=>crypto.createHmac('sha256',codeSecret()).update('tafakkur:code-session:v2').digest();
 export function cookieFor(u){
- const payload=Buffer.from(JSON.stringify({id:u.id,username:u.username||'',first_name:u.first_name||'',exp:Math.floor(Date.now()/1000)+86400})).toString('base64url');
+ const payload=Buffer.from(JSON.stringify({codeId:u.codeId,exp:Math.floor(Date.now()/1000)+2592000})).toString('base64url');
  const h=crypto.createHmac('sha256',sessionKey()).update(payload).digest('base64url');
- return 'tafakkur_session='+payload+'.'+h+'; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=86400';
+ return 'tafakkur_session='+payload+'.'+h+'; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=2592000';
 }
 export function authUser(req){
- const raw=req.headers['x-telegram-init-data'];
- if(raw)return verifyMiniApp(raw);
- const cookie=String(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('tafakkur_session='));
- if(!cookie)throw BAD('Avval Telegram orqali shaxsingizni tasdiqlang.');
- const value=cookie.slice('tafakkur_session='.length),parts=value.split('.');
- if(parts.length!==2)throw BAD('Sessiya noto‘g‘ri.');
- const h=crypto.createHmac('sha256',sessionKey()).update(parts[0]).digest();
- let got;try{got=Buffer.from(parts[1],'base64url')}catch{throw BAD('Sessiya noto‘g‘ri.');}
- if(h.length!==got.length||!crypto.timingSafeEqual(h,got))throw BAD('Sessiya noto‘g‘ri.');
- let user;try{user=JSON.parse(Buffer.from(parts[0],'base64url').toString())}catch{}
- if(!Number.isSafeInteger(user?.id)||user.id<=0||!Number.isFinite(user.exp)||user.exp<Math.floor(Date.now()/1000))throw BAD('Sessiya muddati tugagan.');
- return {id:user.id,username:String(user.username||''),first_name:String(user.first_name||'')};
+ const raw=String(req.headers.cookie||'').split(';').map(s=>s.trim()).find(s=>s.startsWith('tafakkur_session='));
+ if(!raw)throw BAD('Bu brauzerda faol test sessiyasi topilmadi.',401);
+ const parts=raw.slice('tafakkur_session='.length).split('.');
+ if(parts.length!==2)throw BAD('Sessiya noto‘g‘ri.',401);
+ const exp=crypto.createHmac('sha256',sessionKey()).update(parts[0]).digest();
+ let provided;try{provided=Buffer.from(parts[1],'base64url')}catch{throw BAD('Sessiya noto‘g‘ri.',401)}
+ if(provided.length!==exp.length||!crypto.timingSafeEqual(exp,provided))throw BAD('Sessiya noto‘g‘ri.',401);
+ let v;try{v=JSON.parse(Buffer.from(parts[0],'base64url').toString())}catch{}
+ if(!v||!Number.isFinite(v.exp)||v.exp<Math.floor(Date.now()/1000)||!/^[a-f0-9]{40}$/.test(v.codeId||''))throw BAD('Sessiya muddati tugagan.',401);
+ return {codeId:v.codeId};
 }
 
 /**
  * No Supabase. One immutable private Blob per event. Only the earliest
  * successful write to an exact pathname counts. No client can erase a try.
  */
-const PREFIX='tafakkur-v1';
-const keyFor=(id,part)=>PREFIX+'/users/'+String(id)+'/'+part+'.json';
+const PREFIX='tafakkur-code-v2';
+const keyFor=(id,part)=>PREFIX+'/codes/'+String(id)+'/'+part+'.json';
 const blobConfig=()=>{if(!process.env.BLOB_READ_WRITE_TOKEN)throw BAD('Vercel Blob hali ulanmagan. Tashkilotchiga xabar bering.',503)};
 const toJSON=async(path)=>{
  blobConfig();
@@ -77,14 +76,14 @@ const putOnce=async(path,data)=>{
  catch(e){if(isConflict(e))return false;throw e;}
 };
 async function loadAttempt(u){
- const start=await toJSON(keyFor(u.id,'start'));
+ const start=await toJSON(keyFor(u.codeId,'start'));
  if(!start)return null;
  if(!Number.isFinite(start.startedAt))throw BAD('Urinish vaqti xato.',503);
  const entries=[];
  let started=start.startedAt;
  const NOW=Date.now();
  for(let i=0;i<25;i++){
-   const answerPath=keyFor(u.id,'answer-'+String(i).padStart(2,'0'));
+   const answerPath=keyFor(u.codeId,'answer-'+String(i).padStart(2,'0'));
    let entry=await toJSON(answerPath);
    if(!entry){
      if(NOW<started+20000)break;
@@ -96,10 +95,10 @@ async function loadAttempt(u){
    started=Math.min(Number(entry.at)||started+20000,started+20000);
  }
  const status=entries.length===25?'finished':'active';
- const delivery=status==='finished'?await toJSON(keyFor(u.id,'notification-sent')):null;
+ const delivery=status==='finished'?await toJSON(keyFor(u.codeId,'notification-sent')):null;
  return {
-  status,tg_id:u.id,fullname:start.fullname,age:start.age,
-  entered_username:start.entered_username||null,verified_username:start.verified_username||null,
+  status,code_id:u.codeId,fullname:start.fullname,age:start.age,
+  entered_username:start.entered_username||null,
   answers:entries,question_index:entries.length,
   question_started_at:new Date(started).toISOString(),
   expires_at:new Date(started+20000).toISOString(),
@@ -110,12 +109,12 @@ async function loadAttempt(u){
 export async function state(u){return await loadAttempt(u);}
 export async function begin(u,name,age,entered){
  const start={
-  tg_id:u.id,fullname:name,age,
-  entered_username:entered||'',verified_username:u.username||'',
+  code_id:u.codeId,fullname:name,age,
+  entered_username:entered||'',
   startedAt:Date.now()
  };
- const first=await putOnce(keyFor(u.id,'start'),start);
- // Once created, it is never overwritten, even from a new device.
+ const first=await putOnce(keyFor(u.codeId,'start'),start);
+ if(!first)throw BAD('Ushbu kod ishlatilgan. Yangi kod oling.',409);
  const r=await loadAttempt(u);
  if(!r)throw BAD('Urinish yozilmadi. Qayta urinib ko‘ring.',503);
  return r;
@@ -128,7 +127,7 @@ export async function submit(u,i,choice){
  const expiry=Date.parse(row.expires_at);
  const now=Date.now();
  const valid=now<expiry?choice:-1;
- const answerPath=keyFor(u.id,'answer-'+String(i).padStart(2,'0'));
+ const answerPath=keyFor(u.codeId,'answer-'+String(i).padStart(2,'0'));
  await putOnce(answerPath,{choice:valid,at:valid===-1?expiry:now});
  row=await loadAttempt(u);
  if(!row)throw BAD('Savollar yuklanmadi.',503);
@@ -146,14 +145,14 @@ export function present(r){
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\u0027':'&#39;'}[c]));
 // The key is server-only at runtime (not included in browser HTML).
 // Can be overridden using QUIZ_ANSWER_KEY in Vercel.
-const FALLBACK_KEY='1302201231020310203031320';
+
 export async function maybeNotify(r){
  if(!r||r.status!=='finished')return;
- const key=String(process.env.QUIZ_ANSWER_KEY||FALLBACK_KEY);
+ const key=String(process.env.QUIZ_ANSWER_KEY||'');
  if(!/^[0-3]{25}$/.test(key)){console.error('Answer key format invalid');return;}
- const statusPath=keyFor(r.tg_id,'notification-sent');
+ const statusPath=keyFor(r.code_id,'notification-sent');
  if(await toJSON(statusPath))return;
- const claimPath=keyFor(r.tg_id,'notification-lock');
+ const claimPath=keyFor(r.code_id,'notification-lock');
  if(!await putOnce(claimPath,{at:Date.now()}))return;
  try{
    const choices=Array.isArray(r.answers)?r.answers:[];
@@ -169,9 +168,8 @@ export async function maybeNotify(r){
     '📚 <b>TAFAKKUR — YANGI NATIJA</b>',
     '👤 Ism: <b>'+esc(r.fullname)+'</b>',
     '🎂 Yosh: <b>'+r.age+'</b>',
-    '🆔 Telegram ID: <code>'+esc(r.tg_id)+'</code>',
-    '📱 Telegram: '+esc(r.verified_username?'@'+r.verified_username:'Username yo‘q'),
-    '📝 Kiritilgan username: '+esc(r.entered_username||'—'),
+    '🎟 Kod ID: <code>'+esc(r.code_id.slice(0,12))+'</code>',
+    '📱 Telegram username: '+esc(r.entered_username?'@'+r.entered_username:'—'),
     '🏆 Natija: <b>'+correct*4+'/100</b>',
     '✅ To‘g‘ri: '+correct+'/25',
     '❌ Noto‘g‘ri: '+(25-correct-missed),
