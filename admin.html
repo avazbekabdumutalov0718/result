@@ -57,6 +57,26 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
     <button class="secondary" id="resendBtn" type="button">Telegramga qayta yuborish</button>
   </div>
 </form>
+
+<div style="border:1px solid #526b5a;background:#10221e;border-radius:16px;padding:20px;margin:24px 0">
+ <h2 style="font:700 28px Georgia,serif;color:var(--gold);margin:0 0 10px">Barcha 20 ta qatnashchi natijasi</h2>
+ <p class="lead" style="margin:0 0 16px">Yuqoridagi admin maxfiy kalitini kiriting va bitta tugmani bosing. Barcha kodlar, ismlar, natijalar va test holati bitta jadvalda ko‘rinadi. 4 xonali kodni alohida kiritish shart emas.</p>
+ <div class="actions">
+  <button id="allResultsBtn" type="button">20 ta natijani birga ko‘rish</button>
+  <button id="csvBtn" class="secondary" type="button" disabled>CSV faylni yuklash</button>
+ </div>
+ <p id="allResultsStatus" role="status" style="color:#bfd6c5"></p>
+ <div id="allResultsWrap" hidden style="overflow-x:auto;margin-top:16px">
+  <table id="allResultsTable" style="border-collapse:collapse;width:100%;min-width:875px;text-align:left;font-size:13px">
+   <thead><tr>
+    <th scope="col">№</th><th scope="col">Kod</th><th scope="col">Ism-familiya</th><th scope="col">Yosh</th>
+    <th scope="col">Telegram</th><th scope="col">Holati</th><th scope="col">Ball</th>
+    <th scope="col">To‘g‘ri</th><th scope="col">Yuborilgan</th><th scope="col">Batafsil</th>
+   </tr></thead>
+   <tbody id="allResultsBody"></tbody>
+  </table>
+ </div>
+</div>
 <p id="resultError" role="alert" style="color:#ffb2a0"></p>
 <div id="resultOutput" hidden style="border:1px solid #556959;border-radius:12px;padding:18px;margin-top:12px">
   <p id="resultText" style="white-space:pre-wrap;margin:0;color:#f6eddd;line-height:1.8"></p>
@@ -110,6 +130,66 @@ async function lookupResult(action){
  }catch(err){$('resultError').textContent=err.message}
  finally{$('lookupBtn').disabled=false;$('resendBtn').disabled=false;}
 }
+
+let allRows=[];
+const cells=(tr,values)=>{
+ for(const value of values){
+  const td=document.createElement('td');td.textContent=String(value??'—');
+  td.style.padding='12px 11px';td.style.borderBottom='1px solid #344d41';td.style.verticalAlign='middle';
+  tr.appendChild(td);
+ }
+};
+const stateLabel=r=>r.status==='finished'?'Tugallangan':r.status==='active'?'Davom etmoqda':'Boshlanmagan';
+const sentLabel=r=>r.telegram==='sent'?'Ha':r.telegram==='missing_token'?'Bot tokeni yo‘q':r.telegram==='pending'?'Kutilmoqda':'—';
+$('allResultsBtn').addEventListener('click',async()=>{
+ const secret=$('lookupKey').value;
+ $('allResultsStatus').textContent='';
+ if(secret.length<20){$('allResultsStatus').textContent='Avval yuqoridagi admin maxfiy kalitini kiriting.';$('lookupKey').focus();return;}
+ $('allResultsBtn').disabled=true;$('allResultsBtn').textContent='Barcha natijalar yuklanmoqda…';
+ try{
+  const resp=await fetch('/api/admin/results',{
+   method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':secret},
+   credentials:'same-origin',cache:'no-store',body:'{}'
+  });
+  const result=await resp.json().catch(()=>({}));
+  if(!resp.ok)throw Error(result.error||'Natijalar olinmadi. Qayta urinib ko‘ring.');
+  if(!Array.isArray(result.rows))throw Error('Serverdan noto‘g‘ri natija keldi.');
+  allRows=result.rows;
+  $('allResultsBody').replaceChildren();
+  result.rows.forEach((r,i)=>{
+   const tr=document.createElement('tr');
+   cells(tr,[i+1,r.code,r.participant?.fullname||'—',r.participant?.age??'—',r.participant?.username?'@'+r.participant.username:'—',stateLabel(r),r.report?r.report.points+'/100':'—',r.report?r.report.correct+'/25':'—',sentLabel(r)]);
+   const last=document.createElement('td');last.style.padding='9px';
+   if(r.status!=='unused'){
+    const button=document.createElement('button');button.type='button';button.className='secondary';
+    button.style.padding='7px 10px';button.textContent='Ko‘rish';button.onclick=()=>{
+     $('lookupCode').value=r.code;
+     renderResult(r);
+     $('resultOutput').scrollIntoView({behavior:'smooth',block:'center'});
+    };last.appendChild(button);
+   }else{last.textContent='—';}
+   tr.appendChild(last);$('allResultsBody').appendChild(tr);
+  });
+  $('allResultsWrap').hidden=false;
+  $('csvBtn').disabled=false;
+  $('allResultsStatus').textContent='Jami: '+result.total+' • Tugallagan: '+result.finished+' • Jarayonda: '+result.active+' • Boshlamagan: '+result.unused;
+ }catch(e){$('allResultsStatus').textContent='Xatolik: '+e.message;}
+ finally{$('allResultsBtn').disabled=false;$('allResultsBtn').textContent='20 ta natijani birga ko‘rish';}
+});
+$('csvBtn').addEventListener('click',()=>{
+ if(!allRows.length)return;
+ const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+ const lines=[['Kod','Ism-familiya','Yosh','Telegram','Holat','Ball (100)','To‘g‘ri (25)','Noto‘g‘ri','Javobsiz','Telegramga yuborilgan','Yakunlangan sana']];
+ for(const r of allRows)lines.push([
+  r.code,r.participant?.fullname||'',r.participant?.age??'',r.participant?.username?'@'+r.participant.username:'',
+  stateLabel(r),r.report?.points??'',r.report?.correct??'',r.report?.incorrect??'',r.report?.missed??'',
+  sentLabel(r),r.completedAt||''
+ ]);
+ const blob=new Blob(['\uFEFF'+lines.map(row=>row.map(quote).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');
+ a.href=url;a.download='tafakkur-barcha-20-natija.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
+});
+
 $('findResult').addEventListener('submit',e=>{e.preventDefault();void lookupResult('lookup');});
 $('resendBtn').addEventListener('click',()=>{void lookupResult('resend');});
 })();
