@@ -135,6 +135,18 @@ export async function submit(u,i,choice){
  if(!row)throw BAD('Savollar yuklanmadi.',503);
  return row;
 }
+export function summaryForAdmin(row){
+ if(!row||row.status!=='finished')return null;
+ const key=String(process.env.QUIZ_ANSWER_KEY||'');
+ if(!/^[0-3]{25}$/.test(key))throw BAD('To‘g‘ri javoblar kaliti sozlanmagan.',503);
+ const choices=Array.isArray(row.answers)?row.answers:[];
+ const correct=choices.filter((answer,i)=>answer===Number(key[i])).length;
+ const missed=choices.filter(answer=>answer==null||answer===-1).length;
+ return {
+  points:correct*4,totalPoints:100,correct,incorrect:25-correct-missed,missed,
+  selected:choices.map((v,i)=>({number:i+1,selected:Number.isInteger(v)&&v>=0&&v<4?'ABCD'[v]:'—',correct:'ABCD'[Number(key[i])]}))
+ };
+}
 export function present(r){
  if(!r)return {status:'new',serverTime:new Date().toISOString()};
  if(r.status==='finished')return {status:'finished',retake:false,notification:r.notification_sent_at?'sent':'pending'};
