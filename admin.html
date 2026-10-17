@@ -43,6 +43,24 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
 <pre id="codes"></pre>
 <div class="actions"><button class="secondary" id="copy" type="button">📋 Nusxalash</button><button class="secondary" id="download" type="button">⬇ TXT yuklab olish</button></div>
 </div>
+
+<hr style="border:0;border-top:1px solid #455e51;margin:36px 0 28px">
+<h2 style="font:700 30px Georgia,serif;color:var(--gold)">Natijani tekshirish</h2>
+<p class="lead">Oldin ishlatilgan 4 xonali kodni kiriting. Natijani faqat admin kaliti orqali ko‘rish va bot tokeni ulanganidan keyin Telegramga qayta jo‘natish mumkin. Qatnashchi testni qayta ishlamaydi.</p>
+<form id="findResult" autocomplete="off">
+  <label for="lookupKey">Admin maxfiy kaliti</label>
+  <input id="lookupKey" type="password" required minlength="20" placeholder="QUIZ_ADMIN_SECRET" autocomplete="off">
+  <label for="lookupCode">Ishlatilgan 4 xonali kod</label>
+  <input id="lookupCode" type="text" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="0000" autocomplete="off">
+  <div class="actions">
+    <button id="lookupBtn" type="submit">Natijani ko‘rish</button>
+    <button class="secondary" id="resendBtn" type="button">Telegramga qayta yuborish</button>
+  </div>
+</form>
+<p id="resultError" role="alert" style="color:#ffb2a0"></p>
+<div id="resultOutput" hidden style="border:1px solid #556959;border-radius:12px;padding:18px;margin-top:12px">
+  <p id="resultText" style="white-space:pre-wrap;margin:0;color:#f6eddd;line-height:1.8"></p>
+</div>
 <div class="notice">Xavfsizlik: admin kalitini qatnashchilarga bermang. Bu sahifa serverda oldindan sozlangan 20 ta kodni ko‘rsatadi. Yangi kod chiqarmaydi va ishlatilgan kodni qayta faollashtirmaydi. Qatnashchilarning Telegram username’i tasdiqlanmaydi, o‘zlari kiritadi.</div>
 </div></main>
 <script>
@@ -63,5 +81,36 @@ $('download').addEventListener('click',()=>{
  const blob=new Blob([list.join('\n')+'\n'],{type:'text/plain;charset=utf-8'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tafakkur-bir-martalik-kodlar.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 });
+const renderResult=(r)=>{
+ $('resultOutput').hidden=false;
+ if(r.status==='unused'){$('resultText').textContent='Bu kod bilan hali test boshlanmagan.';return;}
+ const person=r.participant||{};
+ const lines=['Ism: '+(person.fullname||'—'),'Yosh: '+(person.age??'—'),'Telegram: '+(person.username?'@'+person.username:'—'),'Holat: '+(r.status==='finished'?'Test tugatilgan':'Test davom etmoqda')];
+ if(r.report){
+   lines.push('NATIJA: '+r.report.points+' / 100','To‘g‘ri: '+r.report.correct+' / 25','Noto‘g‘ri: '+r.report.incorrect,'Javobsiz: '+r.report.missed);
+   lines.push('Javoblar (tanlangan / to‘g‘ri):');
+   for(const d of r.report.selected)lines.push(String(d.number).padStart(2,'0')+'. '+d.selected+' / '+d.correct);
+ }
+ lines.push('Telegramga yuborish: '+(r.telegram==='sent'?'✅ Yuborilgan':r.telegram==='missing_token'?'❌ Bot tokeni Vercel’da yo‘q':'⏳ Hali yuborilmagan'));
+ if(r.message)lines.push(r.message);
+ $('resultText').textContent=lines.join('\n');
+};
+async function lookupResult(action){
+ $('resultError').textContent='';
+ $('resultOutput').hidden=true;
+ const adminKey=$('lookupKey').value;
+ const code=$('lookupCode').value.trim();
+ if(!/^[0-9]{4}$/.test(code)){$('resultError').textContent='4 ta raqam kiriting.';return;}
+ $('lookupBtn').disabled=true;$('resendBtn').disabled=true;
+ try{
+  const r=await fetch('/api/admin/result',{method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':adminKey},body:JSON.stringify({code,action}),cache:'no-store'});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(data.error||'Natija tekshirilmadi');
+  renderResult(data);
+ }catch(err){$('resultError').textContent=err.message}
+ finally{$('lookupBtn').disabled=false;$('resendBtn').disabled=false;}
+}
+$('findResult').addEventListener('submit',e=>{e.preventDefault();void lookupResult('lookup');});
+$('resendBtn').addEventListener('click',()=>{void lookupResult('resend');});
 })();
 </script></body></html>
