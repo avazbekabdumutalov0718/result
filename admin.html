@@ -29,34 +29,34 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
 </head>
 <body><main>
 <div class="top"><span>✦ TAFAKKUR KUTUBXONASI</span><a href="/">← Test sahifasi</a></div>
-<h1>Bir martalik kodlar</h1>
-<p class="lead">Bu sahifa faqat tashkilotchi uchun. Har bir kodni faqat bir marta ishlatish mumkin; kodni qatnashchiga shaxsiy tarzda yuboring. Qatnashchi Telegramga kirishi shart emas.</p>
+<h1>20 ta maxsus kod</h1>
+<p class="lead">Bu sahifa faqat tashkilotchi uchun. 20 ta tayyor 4 xonali kodni ko‘ring va qatnashchilarga bittadan shaxsiy tarzda bering. Har biri faqat bir marta ishlaydi. Qatnashchi Telegramga kirishi shart emas.</p>
 <div class="panel">
 <form id="generate" autocomplete="off">
 <label for="adminKey">Admin maxfiy kaliti</label>
 <input id="adminKey" type="password" required minlength="20" placeholder="Vercel’dagi QUIZ_ADMIN_SECRET" autocomplete="new-password">
-<div class="flex"><div><label for="count">Nechta kod yaratilsin?</label><input id="count" type="number" required min="1" max="100" value="20" inputmode="numeric"></div><button id="btn" type="submit">Kodlarni yaratish →</button></div>
+<button id="btn" style="margin-top:18px" type="submit">20 ta kodni ko‘rsatish →</button>
 </form>
 <p id="error" role="alert"></p>
 <div id="output" hidden>
-<h2>Tayyor kodlar</h2><p class="lead">Faqat shu sahifada yaratilgan kodlarni o‘zingizda saqlab oling. Sahifani yangilasangiz, ro‘yxat yo‘qoladi.</p>
+<h2>20 ta tayyor 4 xonali kod</h2><p class="lead">Kodlar server sozlamalarida yashirin saqlanadi. Ularni faqat admin parolingiz bilan ko‘rish mumkin.</p>
 <pre id="codes"></pre>
 <div class="actions"><button class="secondary" id="copy" type="button">📋 Nusxalash</button><button class="secondary" id="download" type="button">⬇ TXT yuklab olish</button></div>
 </div>
-<div class="notice">Xavfsizlik: admin kalitini qatnashchilarga bermang. Bu sahifa kod yaratadi, ishlatilgan kodlarni qayta faollashtirmaydi. Qatnashchilarning Telegram username’i tasdiqlanmaydi, o‘zlari kiritadi.</div>
+<div class="notice">Xavfsizlik: admin kalitini qatnashchilarga bermang. Bu sahifa serverda oldindan sozlangan 20 ta kodni ko‘rsatadi. Yangi kod chiqarmaydi va ishlatilgan kodni qayta faollashtirmaydi. Qatnashchilarning Telegram username’i tasdiqlanmaydi, o‘zlari kiritadi.</div>
 </div></main>
 <script>
 (()=>{'use strict';
 const $=id=>document.getElementById(id);let list=[];
 $('generate').addEventListener('submit',async e=>{
- e.preventDefault();$('error').textContent='';$('btn').disabled=true;$('btn').textContent='Yaratilmoqda…';
+ e.preventDefault();$('error').textContent='';$('btn').disabled=true;$('btn').textContent='Yuklanmoqda…';
  try{
-  const r=await fetch('/api/admin/codes',{method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':$('adminKey').value},body:JSON.stringify({count:Number($('count').value)}),cache:'no-store'});
+  const r=await fetch('/api/admin/codes',{method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':$('adminKey').value},body:JSON.stringify({}),cache:'no-store'});
   const data=await r.json().catch(()=>({}));
   if(!r.ok)throw Error(data.error||'Kod yaratish amalga oshmadi');
   list=data.codes;$('output').hidden=false;$('codes').textContent=list.map((s,i)=>String(i+1).padStart(2,'0')+'. '+s).join('\n');
   $('adminKey').value='';
- }catch(err){$('error').textContent=err.message;}finally{$('btn').disabled=false;$('btn').textContent='Kodlarni yaratish →';}
+ }catch(err){$('error').textContent=err.message;}finally{$('btn').disabled=false;$('btn').textContent='20 ta kodni ko‘rsatish →';}
 });
 $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(list.join('\n'));$('copy').textContent='✓ Nusxalandi';}catch{$('error').textContent='Nusxalash cheklangan. Kodlarni qo‘lda tanlang.'}});
 $('download').addEventListener('click',()=>{
