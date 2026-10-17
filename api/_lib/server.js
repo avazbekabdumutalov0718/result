@@ -96,13 +96,15 @@ async function loadAttempt(u){
    started=Math.min(Number(entry.at)||started+20000,started+20000);
  }
  const status=entries.length===25?'finished':'active';
+ const delivery=status==='finished'?await toJSON(keyFor(u.id,'notification-sent')):null;
  return {
   status,tg_id:u.id,fullname:start.fullname,age:start.age,
   entered_username:start.entered_username||null,verified_username:start.verified_username||null,
   answers:entries,question_index:entries.length,
   question_started_at:new Date(started).toISOString(),
   expires_at:new Date(started+20000).toISOString(),
-  completed_at:status==='finished'?new Date(started).toISOString():null
+  completed_at:status==='finished'?new Date(started).toISOString():null,
+  notification_sent_at:delivery?.at||null
  };
 }
 export async function state(u){return await loadAttempt(u);}
@@ -134,7 +136,7 @@ export async function submit(u,i,choice){
 }
 export function present(r){
  if(!r)return {status:'new',serverTime:new Date().toISOString()};
- if(r.status==='finished')return {status:'finished',retake:false};
+ if(r.status==='finished')return {status:'finished',retake:false,notification:r.notification_sent_at?'sent':'pending'};
  const i=r.question_index;
  if(!Number.isInteger(i)||i<0||i>=25)throw BAD('Savollar holati xato.',503);
  return {status:'active',name:r.fullname,index:i,total:25,
@@ -187,6 +189,7 @@ export async function maybeNotify(r){
    const result=await rr.json().catch(()=>({}));
    if(!rr.ok||!result.ok)throw Error('Telegram delivery failed: '+(result.description||rr.status));
    await putOnce(statusPath,{at:Date.now(),messageId:result.result?.message_id});
+   r.notification_sent_at=Date.now();
  }catch(e){
    console.error('Saved result but Telegram send failed:',e.message);
    try{await del(claimPath)}catch(ex){console.error('Failed to unlock notification',ex.message)}
