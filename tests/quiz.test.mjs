@@ -14,7 +14,7 @@ test('Exactly 20 configured codes are four-digit and unique',()=>{
  const codes=registeredCodes();
  assert.equal(codes.length,20);
  assert.equal(new Set(codes).size,20);
- assert.ok(codes.every(c=>/^\\d{4}$/.test(c)));
+ assert.ok(codes.every(c=>/^\d{4}$/.test(c)));
  assert.match(verifyCode(codes[0]).codeId,/^[a-f0-9]{40}$/);
  assert.throws(()=>verifyCode('12345'),/4 ta raqam/);
  assert.throws(()=>verifyCode('0000'),/Kod noto‘g‘ri/);
@@ -39,7 +39,10 @@ test('Public quiz never reveals score or answer key',()=>{
 test('Participant HTML requires code and Telegram username without Telegram login popup',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
  assert.match(html,/id="oneTimeCode"/);
- assert.match(html,/name="oneTimeCode"[^>]*maxlength="4"/);
+ assert.match(html,/name="oneTimeCode"[^>]*maxlength="32"/);
+ assert.match(html,/id="codeProgress"/);
+ assert.ok(html.includes("oneTimeInput.addEventListener('input'"));
+ assert.ok(html.includes("replace(/\\D/g,'').slice(0,4)"));
  assert.match(html,/id="username"[^>]*required/);
  assert.ok(!html.includes('telegram-widget.js'));
  assert.ok(!html.includes('Telegram Authorization'));
