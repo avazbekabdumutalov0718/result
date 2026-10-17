@@ -1,32 +1,48 @@
-# Tafakkur Kutubxonasi — Adabiyot bilimi sinovi (Supabasesiz)
+# Tafakkur Kutubxonasi — 25 ta savolli test (2026)
 
-**Vercel + GitHub + Telegram + Vercel Blob. Supabase mutlaqo ishlatilmaydi.**
+**Sayt:** https://result-pink-eight.vercel.app
 
-- 25 ta savol, 5 tasi jahon adabiyoti; har biriga 20 soniya.
-- Bitta tekshirilgan Telegram ID = bir umrlik bitta urinish (hatto brauzer yoki qurilma almashsa ham).
-- Ism va yosh majburiy, Telegram username ixtiyoriy.
-- Qatnashchiga ball ko‘rsatilmaydi; natijalar to‘g‘ri/noto‘g‘ri variantlar bilan faqat 7419543322 ga @Tafakkur_kutubxonasi_result_bot dan keladi.
-- Botga qatnashchilar **/start bosmaydi**: saytning o‘zida Telegram Login Widget orqali tasdiqlanadi.
+**Admin kod generatori:** https://result-pink-eight.vercel.app/admin.html
 
-## QISQA SOZLASH
+## Qatnashchi oqimi
 
-1. Vercel > **result** > **Storage** > **Create Database/Store** > **Blob** > **Private**. Nomini `tafakkur-quiz` deb qo‘ying va **result** loyihasining Production muhitiga **Connect** qiling. Vercel avtomatik `BLOB_READ_WRITE_TOKEN` beradi. Bu hech qanday Supabase xizmatini talab qilmaydi. Agar private store mavjud bo‘lmasa, public Blob tanlamang, chunki unda ishtirokchi ma’lumotlari bo‘ladi.
-2. BotFather'da avvalgi ochiq tokenni `/revoke` qilib, yangi token oling. Vercel > result > Settings > Environment Variables > `TELEGRAM_BOT_TOKEN` ni yangi token bilan saqlang (faqat Production). Chatda tokenni yubormang!
-3. `RESULT_CHAT_ID=7419543322` (ixtiyoriy, kodda default bor). `QUIZ_ANSWER_KEY` ham ixtiyoriy, kodda default mavjud; sir saqlamoqchi bo‘lsangiz, keyin secret variantiga o‘tkaziladi.
-4. Vercel > Deployments > so‘nggi build > **Redeploy** (Production) qiling. `/api/health` manzilida `ok:true` chiqishini tekshiring.
-5. @BotFather > `/setdomain` > `@Tafakkur_kutubxonasi_result_bot` > `result-pink-eight.vercel.app`. Domenni allaqachon ulangan bo‘lsa, takrorlash shart emas.
-6. Vercel > Settings > Deployment Protection > Vercel Authentication'ni Production havoladan o‘chiring, aks holda boshqa qatnashchilar kira olmaydi.
-7. Telegram admin akkauntingiz (ID 7419543322) botga `/start` yozgan bo‘lishi kerak; oldin yuborgan bo‘lsangiz qayta kerak emas.
+1. Qatnashchi oddiy brauzerda saytni ochadi. Telegram login va SMS talab qilinmaydi.
+2. **Bir martalik kod**, **to‘liq ism**, **yosh**, **Telegram username** (barchasi majburiy) kiritadi.
+3. Har bir savolga 20 soniya vaqt beriladi; vaqt tugasa javob berilmagan deb belgilanadi.
+4. 25 savol yakunlangach, qatnashchiga ball va to‘g‘ri javoblar ko‘rinmaydi.
+5. Natija @Tafakkur_kutubxonasi_result_bot orqali faqat Telegram chat ID **7419543322** ga yuboriladi.
 
-## Asosiy xavfsizlik
+## Administrator kodlarni qanday yaratadi?
 
-- Bot token hech qachon HTML'ga yoki GitHub'ga yozilmaydi.
-- Telegram login imzosi serverda tekshiriladi. Cookies `HttpOnly; Secure; SameSite=Lax`.
-- Urinish qayta tiklanmaydi. Vercel Blob'da private immutable blobs saqlanadi, takroriy start yangi yozuv qo‘shmaydi.
-- Har bir javob server vaqti bilan hisoblanadi, 20 soniya o‘tgach javobsiz qoldiriladi.
-- Faqat foydalanuvchi sinovni to‘liq yakunlaganida yoki sahifaga qaytib vaqt tugagani aniqlanganda Telegramga xabar yuboriladi. Sahifa umuman ochilmasa, muddat tugagan natijani fon orqali yuborish uchun qo‘shimcha cron ishini sozlash mumkin.
-- Qatnashchi boshqa Telegram akkaunt ochsa, uning aynan o‘sha odamligini kafolatli aniqlash imkonsiz.
+1. Vercel > result > Settings > Environment Variables > Production muhitida `QUIZ_ADMIN_SECRET` o‘zgaruvchisini **kamida 20 ta belgilik kuchli va tasodifiy maxfiy kalit** bilan yarating.
+2. `/admin.html` sahifasini oching va o‘zingiz belgilagan maxfiy kalitni kiriting.
+3. 1–100 ta kod yarating; TXT sifatida saqlang yoki ko‘chiring va har qatnashchiga bittadan tarqating.
+4. Kod formati `TK-XXXXXXXXXX-XXXXXXXX`. Kod serverda maxfiy kalit bilan imzolanadi; o‘ylab topilgan kod qabul qilinmaydi.
+5. Ishlatilgan kod yana hech qachon yangi test boshlamaydi. Birinchi brauzerda mavjud sessiya davom ettirilishi mumkin.
 
-## Muhim cheklov
+**Diqqat:** Username qo‘lda kiritiladi va Telegram tomonidan tasdiqlanmaydi. Bu usul bir **kodni** qayta ishlatishni to‘sadi, lekin bir odamning boshqa koddan foydalanishini kafolatli aniqlay olmaydi.
 
-GitHub repo ochiq. Server javob kalitining tayyor zaxira qiymati manba kodida bo‘lgani uchun texnik bilimli qatnashchi uni topishi mumkin. Yuqori xavfsizlikdagi tanlov uchun javob kalitini yashirin sozlamada saqlash va koddagi zaxira kalitini olib tashlash ma'qul.
+## Supabasesiz sozlash
+
+GitHub loyihasi: https://github.com/avazbekabdumutalov0718/result
+
+- **Vercel Blob:** Vercel > result > Storage > Create > Blob > **Private** qilib yarating, Production muhitiga ulang. O‘zi `BLOB_READ_WRITE_TOKEN` beradi. **Public** store yaratmang, chunki foydalanuvchi ma’lumotlari maxfiy.
+- **QUIZ_ADMIN_SECRET:** admin kod generatori va browser sessiyasini imzolash uchun.
+- **QUIZ_ANSWER_KEY:** 25 ta A/B/C/D variantining 0/1/2/3 indekslariga mos **25 raqam**. Faqat Vercel Production env ga saqlang. Kodda zaxira javob kaliti yo‘q, shuning uchun to‘liq ishlashi uchun bu kalit kerak.
+- **TELEGRAM_BOT_TOKEN:** BotFather’dan olingan **yangi** maxfiy token; eski token chatda oshkor qilingan va almashtirilishi shart.
+- **RESULT_CHAT_ID:** `7419543322` (kodda default, env ixtiyoriy).
+
+Har bir env qo‘shilganidan so‘ng **Production redeploy** qiling. `/api/health` sahifasi hech qanday maxfiy qiymatni qaytarmasdan qaysi sozlama mavjudligini ko‘rsatadi. `ready:true` chiqsa, sozlamalar borligini tasdiqlaydi, ammo haqiqiy natija yuborilganini isbotlamaydi.
+
+## Xavfsizlik va cheklovlar
+
+- Token va admin kaliti hech qachon brauzerga yoki GitHub ochiq kodiga yuborilmaydi.
+- `admin.html` kod yaratish formasi Vercel maxfiy kalitisiz ishlamaydi.
+- Koddan birinchi foydalanish private Vercel Blob'da o‘zgarmas yozuv sifatida saqlanadi; qayta kirish kodi bloklanadi.
+- Ishtirokchi birinchi brauzerida testni davom ettirishi uchun HttpOnly cookie ishlatiladi.
+- Ball faqat Telegram chatga yuboriladi, sahifaga qaytarilmaydi.
+- Vercel Blob bilan imkon qadar kam amallar qiling. Ko‘p qatnashchi bo‘lsa, optimallashtirilgan database yechimi ko‘proq mos kelishi mumkin.
+- Browser va internet butunlay uzilganda, final natijani yuborish foydalanuvchi keyingi so‘rov yuborganda tiklanadi. Rejalashtirilgan cron hali qo‘shilmagan.
+- Vercel project uchun Deployment Protection yoqilgan bo‘lsa, uni foydalanuvchilar uchun moslashtiring.
+
+Oldin `/setdomain` qilgan bo‘lsangiz, endi Telegram login ishlatilmaydi, domen sozlamasi test uchun kerak emas.
