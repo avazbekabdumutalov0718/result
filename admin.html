@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kodlar boshqaruvi — Tafakkur Kutubxonasi</title>
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#111c1b">
+<style>
+:root{--gold:#dfbf81;--bg:#0b1717;--card:#152523;--border:#33443c;--text:#f7f3e9;--muted:#a6b8af}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#263e36 0,transparent 46%),var(--bg);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;line-height:1.5}
+main{max-width:740px;margin:auto;padding:72px 22px 90px}
+.top{display:flex;align-items:center;justify-content:space-between;color:var(--gold);font-weight:850;letter-spacing:.18em;font-size:13px}
+a{color:var(--gold);text-decoration:none}h1{font-family:Georgia,serif;font-size:clamp(33px,7vw,57px);line-height:1.14;margin:35px 0 15px;color:var(--gold)}
+.lead{color:var(--muted);max-width:600px}
+.panel{background:linear-gradient(125deg,#1b312d,#122120);border:1px solid var(--border);border-radius:24px;padding:28px;margin-top:32px;box-shadow:0 25px 70px #0004}
+label{display:block;font-size:13px;font-weight:800;margin:20px 0 9px}
+input{width:100%;background:#0b1a19;border:1px solid #466258;border-radius:12px;padding:15px 17px;color:var(--text);font:inherit;outline:none}
+input:focus{border-color:var(--gold);box-shadow:0 0 0 3px #dfbf8122}
+.flex{display:flex;gap:15px;align-items:end}.flex>div{flex:1}
+button{background:var(--gold);color:#17221c;border:0;border-radius:12px;padding:15px 20px;font:inherit;font-weight:800;cursor:pointer}
+button:hover{filter:brightness(1.07)}button:disabled{opacity:.58;cursor:wait}
+.secondary{background:#283e36;border:1px solid #61776c;color:var(--text)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}
+pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px solid #334b41;border-radius:14px;color:#cbedce;line-height:1.9;letter-spacing:.055em}
+.notice{background:#243029;padding:14px;border-radius:12px;color:#c6d7c9;font-size:13px;margin-top:20px}
+#error{color:#ffb2a0;font-size:14px;min-height:26px;margin-top:12px}
+#output[hidden]{display:none}
+@media(max-width:540px){main{padding-top:40px}.panel{padding:20px}.flex{flex-direction:column;align-items:stretch}.flex>div{width:100%}button{width:100%}}
+</style>
+</head>
+<body><main>
+<div class="top"><span>✦ TAFAKKUR KUTUBXONASI</span><a href="/">← Test sahifasi</a></div>
+<h1>Bir martalik kodlar</h1>
+<p class="lead">Bu sahifa faqat tashkilotchi uchun. Har bir kodni faqat bir marta ishlatish mumkin; kodni qatnashchiga shaxsiy tarzda yuboring. Qatnashchi Telegramga kirishi shart emas.</p>
+<div class="panel">
+<form id="generate" autocomplete="off">
+<label for="adminKey">Admin maxfiy kaliti</label>
+<input id="adminKey" type="password" required minlength="20" placeholder="Vercel’dagi QUIZ_ADMIN_SECRET" autocomplete="new-password">
+<div class="flex"><div><label for="count">Nechta kod yaratilsin?</label><input id="count" type="number" required min="1" max="100" value="20" inputmode="numeric"></div><button id="btn" type="submit">Kodlarni yaratish →</button></div>
+</form>
+<p id="error" role="alert"></p>
+<div id="output" hidden>
+<h2>Tayyor kodlar</h2><p class="lead">Faqat shu sahifada yaratilgan kodlarni o‘zingizda saqlab oling. Sahifani yangilasangiz, ro‘yxat yo‘qoladi.</p>
+<pre id="codes"></pre>
+<div class="actions"><button class="secondary" id="copy" type="button">📋 Nusxalash</button><button class="secondary" id="download" type="button">⬇ TXT yuklab olish</button></div>
+</div>
+<div class="notice">Xavfsizlik: admin kalitini qatnashchilarga bermang. Bu sahifa kod yaratadi, ishlatilgan kodlarni qayta faollashtirmaydi. Qatnashchilarning Telegram username’i tasdiqlanmaydi, o‘zlari kiritadi.</div>
+</div></main>
+<script>
+(()=>{'use strict';
+const $=id=>document.getElementById(id);let list=[];
+$('generate').addEventListener('submit',async e=>{
+ e.preventDefault();$('error').textContent='';$('btn').disabled=true;$('btn').textContent='Yaratilmoqda…';
+ try{
+  const r=await fetch('/api/admin/codes',{method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':$('adminKey').value},body:JSON.stringify({count:Number($('count').value)}),cache:'no-store'});
+  const data=await r.json().catch(()=>({}));
+  if(!r.ok)throw Error(data.error||'Kod yaratish amalga oshmadi');
+  list=data.codes;$('output').hidden=false;$('codes').textContent=list.map((s,i)=>String(i+1).padStart(2,'0')+'. '+s).join('\n');
+  $('adminKey').value='';
+ }catch(err){$('error').textContent=err.message;}finally{$('btn').disabled=false;$('btn').textContent='Kodlarni yaratish →';}
+});
+$('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(list.join('\n'));$('copy').textContent='✓ Nusxalandi';}catch{$('error').textContent='Nusxalash cheklangan. Kodlarni qo‘lda tanlang.'}});
+$('download').addEventListener('click',()=>{
+ const blob=new Blob([list.join('\n')+'\n'],{type:'text/plain;charset=utf-8'});
+ const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='tafakkur-bir-martalik-kodlar.txt';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+});
+})();
+</script></body></html>
