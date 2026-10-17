@@ -9,7 +9,7 @@ test('25 questions and 5 world literature',()=>{
  assert.equal(QUESTIONS.filter(q=>q.world).length,5);
  for(const q of QUESTIONS){assert.equal(q.a.length,4);assert.equal(Object.hasOwn(q,'c'),false)}
 });
-process.env.QUIZ_ACCESS_CODES='8958,8862,5765,5718,8407,2688,2887,4246,1402,7410,9188,5333,1645,5704,5799,6920,7902,5478,1431,3817';
+process.env.QUIZ_ACCESS_CODES='1001,1002,1003,1004,1005,1006,1007,1008,1009,1010,1011,1012,1013,1014,1015,1016,1017,1018,1019,1020';
 test('Exactly 20 configured codes are four-digit and unique',()=>{
  const codes=registeredCodes();
  assert.equal(codes.length,20);
@@ -38,7 +38,8 @@ test('Public quiz never reveals score or answer key',()=>{
 });
 test('Participant HTML requires code and Telegram username without Telegram login popup',()=>{
  const html=readFileSync(new URL('../index.html',import.meta.url),'utf8');
- assert.match(html,/id="oneTimeCode"/);\n assert.match(html,/name="oneTimeCode"[^>]*maxlength="4"/);
+ assert.match(html,/id="oneTimeCode"/);
+ assert.match(html,/name="oneTimeCode"[^>]*maxlength="4"/);
  assert.match(html,/id="username"[^>]*required/);
  assert.ok(!html.includes('telegram-widget.js'));
  assert.ok(!html.includes('Telegram Authorization'));
