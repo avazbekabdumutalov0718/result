@@ -12,23 +12,25 @@ const codeSecret=()=>{
  if(!s||s.length<20)throw BAD('QUIZ_ADMIN_SECRET hali sozlanmagan.',503);
  return s;
 };
-const ALPHABET='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-export function makeCodes(n){
- if(!Number.isInteger(n)||n<1||n>100)throw BAD('Kod soni 1–100 oralig‘ida bo‘lsin.',400);
- return Array.from({length:n},()=>{
-  let body='';
-  for(const byte of crypto.randomBytes(10))body+=ALPHABET[byte%32];
-  return 'TK-'+body+'-'+crypto.createHmac('sha256',codeSecret()).update('code:'+body).digest('hex').slice(0,8).toUpperCase();
- });
-}
+const configuredCodes=()=>{
+ const raw=String(process.env.QUIZ_ACCESS_CODES||'').trim();
+ if(!raw)throw BAD('20 ta maxsus kod hali sozlanmagan (QUIZ_ACCESS_CODES).',503);
+ const values=raw.split(/[\s,;]+/).filter(Boolean);
+ if(values.length!==20||new Set(values).size!==20||values.some(code=>!/^\d{4}$/.test(code)))
+  throw BAD('QUIZ_ACCESS_CODES da 20 ta noyob 4 xonali kod bo‘lishi shart.',503);
+ return values;
+};
+export function registeredCodes(){return [...configuredCodes()];}
 export function verifyCode(raw){
- const code=String(raw||'').trim().toUpperCase().replace(/\s+/g,'');
- const m=/^TK-([A-HJ-NP-Z2-9]{10})-([A-F0-9]{8})$/.exec(code);
- if(!m)throw BAD('Bir martalik kod formati noto‘g‘ri.',400);
- const expected=crypto.createHmac('sha256',codeSecret()).update('code:'+m[1]).digest().subarray(0,4);
- const actual=Buffer.from(m[2],'hex');
- if(actual.length!==expected.length||!crypto.timingSafeEqual(expected,actual))throw BAD('Kod noto‘g‘ri.',403);
- return {codeId:crypto.createHash('sha256').update(code).digest('hex').slice(0,40)};
+ const code=String(raw||'').trim();
+ if(!/^\d{4}$/.test(code))throw BAD('Kod 4 ta raqamdan iborat bo‘lishi kerak.',400);
+ // Compare against the private allowlist; never expose this list to the client.
+ const a=Buffer.from(code);
+ let accepted=false;
+ for(const valid of configuredCodes()){const b=Buffer.from(valid);accepted=crypto.timingSafeEqual(a,b)||accepted;}
+ if(!accepted)throw BAD('Kod noto‘g‘ri yoki ro‘yxatda yo‘q.',403);
+ const codeId=crypto.createHmac('sha256',codeSecret()).update('otp4:'+code).digest('hex').slice(0,40);
+ return {codeId};
 }
 export function requireAdmin(req){
  const provided=Buffer.from(String(req.headers?.['x-quiz-admin-key']||'')),expected=Buffer.from(codeSecret());
@@ -57,7 +59,7 @@ export function authUser(req){
  * No Supabase. One immutable private Blob per event. Only the earliest
  * successful write to an exact pathname counts. No client can erase a try.
  */
-const PREFIX='tafakkur-code-v2';
+const PREFIX='tafakkur-four-digit-v1';
 const keyFor=(id,part)=>PREFIX+'/codes/'+String(id)+'/'+part+'.json';
 const blobConfig=()=>{if(!process.env.BLOB_READ_WRITE_TOKEN)throw BAD('Vercel Blob hali ulanmagan. Tashkilotchiga xabar bering.',503)};
 const toJSON=async(path)=>{
