@@ -1,0 +1,11 @@
+{
+  "name": "tafakkur-adabiyot-quiz",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "node --check api/_lib/server.js && node --check api/login.js && node --check api/state.js && node --check api/start.js && node --check api/answer.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
