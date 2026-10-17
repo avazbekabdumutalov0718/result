@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="uz">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Kodlar boshqaruvi — Tafakkur Kutubxonasi</title>
 <meta name="robots" content="noindex,nofollow,noarchive"><meta name="theme-color" content="#111c1b">
 <style>
@@ -25,12 +25,69 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
 #error{color:#ffb2a0;font-size:14px;min-height:26px;margin-top:12px}
 #output[hidden]{display:none}
 @media(max-width:540px){main{padding-top:40px}.panel{padding:20px}.flex{flex-direction:column;align-items:stretch}.flex>div{width:100%}button{width:100%}}
+
+/* Results dashboard: responsive cards on phone, wide table on desktop. */
+#allResultsTable th{padding:12px 11px;color:var(--gold);font-size:12px;white-space:nowrap;border-bottom:1px solid #607464}
+#allResultsTable td{overflow-wrap:anywhere}
+.jump-results{display:inline-flex;align-items:center;justify-content:center;
+ margin:3px 0;text-decoration:none;background:#28463c;border:1px solid #73947d;
+ color:#f4ddad;border-radius:12px;padding:12px 15px;font-size:13px;font-weight:800;min-height:46px}
+#allResultsPanel{scroll-margin-top:18px}
+#allResultsStatus{overflow-wrap:anywhere}
+@media(max-width:700px){
+ main{max-width:100%;padding:30px 16px calc(48px + env(safe-area-inset-bottom,0px))}
+ .top{flex-wrap:wrap;gap:8px;letter-spacing:.1em;font-size:11px}
+ .top a{padding:8px 0;min-height:42px}
+ h1{font-size:clamp(29px,8.5vw,43px);line-height:1.12;margin:18px 0 12px;overflow-wrap:anywhere}
+ .lead{font-size:13px;line-height:1.65}
+ .panel{border-radius:17px;padding:20px 15px;margin-top:19px}
+ input{font-size:16px;min-height:52px;width:100%}
+ label{font-size:13px}
+ button{font-size:14px;min-height:48px;padding:12px 15px;touch-action:manipulation}
+ .actions{gap:8px;flex-direction:column;align-items:stretch}
+ .actions button{width:100%}
+ .jump-results{width:100%;text-align:center}
+ #allResultsPanel{padding:15px 11px!important;margin:21px 0!important}
+ #allResultsPanel h2{font-size:24px!important;line-height:1.2}
+ #allResultsWrap{overflow-x:visible!important}
+ #allResultsTable{width:100%!important;min-width:0!important;border-collapse:separate!important}
+ #allResultsTable thead{display:none}
+ #allResultsTable tbody{display:block}
+ #allResultsTable tbody tr{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:8px;
+  border:1px solid #567368;border-radius:13px;padding:12px 10px;margin-bottom:12px;
+  background:#182f29;box-shadow:0 6px 16px rgba(0,0,0,.13)
+ }
+ #allResultsTable td{display:block!important;min-width:0;padding:7px 6px!important;
+  border-bottom:1px solid #30483f!important;font-size:14px;line-height:1.4}
+ #allResultsTable td::before{
+  content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;
+  letter-spacing:.07em;color:#b0c5b4;margin-bottom:4px;font-weight:800
+ }
+ #allResultsTable td:nth-child(3),#allResultsTable td:nth-child(10){grid-column:1 / -1}
+ #allResultsTable td:nth-child(3){font-weight:800;color:#f7e7bc}
+ #allResultsTable td:nth-child(7){font-weight:800;color:var(--gold)}
+ #allResultsTable td:last-child{border-bottom:none!important}
+ #allResultsTable td:last-child button{width:100%;min-height:44px}
+ #resultText{overflow-wrap:anywhere;line-height:1.65!important;font-size:13px}
+ #codes{white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px}
+ .notice{font-size:12px;line-height:1.55}
+}
+@media(max-width:365px){
+ main{padding-inline:12px}
+ .panel{padding:17px 12px}
+ .top{letter-spacing:.05em}
+ #allResultsPanel{padding:12px 8px!important}
+ #allResultsTable tbody tr{padding:10px 7px}
+}
+
 </style>
 </head>
 <body><main>
 <div class="top"><span>✦ TAFAKKUR KUTUBXONASI</span><a href="/">← Test sahifasi</a></div>
 <h1>20 ta maxsus kod</h1>
-<p class="lead">Bu sahifa faqat tashkilotchi uchun. 20 ta tayyor 4 xonali kodni ko‘ring va qatnashchilarga bittadan shaxsiy tarzda bering. Har biri faqat bir marta ishlaydi. Qatnashchi Telegramga kirishi shart emas.</p>
+<p class="lead">Bu sahifa faqat tashkilotchi uchun. Bir martalik kodlarni va qatnashchilar natijalarini boshqarish uchun maxfiy admin kalitingizni kiriting.</p>
+<a class="jump-results" href="#allResultsPanel">↓ Barcha 20 ta natijani ko‘rish</a>
 <div class="panel">
 <form id="generate" autocomplete="off">
 <label for="adminKey">Admin maxfiy kaliti</label>
@@ -58,7 +115,7 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
   </div>
 </form>
 
-<div style="border:1px solid #526b5a;background:#10221e;border-radius:16px;padding:20px;margin:24px 0">
+<div id="allResultsPanel" style="border:1px solid #526b5a;background:#10221e;border-radius:16px;padding:20px;margin:24px 0">
  <h2 style="font:700 28px Georgia,serif;color:var(--gold);margin:0 0 10px">Barcha 20 ta qatnashchi natijasi</h2>
  <p class="lead" style="margin:0 0 16px">Yuqoridagi admin maxfiy kalitini kiriting va bitta tugmani bosing. Barcha kodlar, ismlar, natijalar va test holati bitta jadvalda ko‘rinadi. 4 xonali kodni alohida kiritish shart emas.</p>
  <div class="actions">
@@ -133,11 +190,12 @@ async function lookupResult(action){
 
 let allRows=[];
 const cells=(tr,values)=>{
- for(const value of values){
+ const labels=['№','Kod','Ism-familiya','Yosh','Telegram','Holati','Ball','To‘g‘ri','Yuborilgan'];
+ values.forEach((value,i)=>{
   const td=document.createElement('td');td.textContent=String(value??'—');
-  td.style.padding='12px 11px';td.style.borderBottom='1px solid #344d41';td.style.verticalAlign='middle';
+  td.dataset.label=labels[i];td.style.padding='12px 11px';td.style.borderBottom='1px solid #344d41';td.style.verticalAlign='middle';
   tr.appendChild(td);
- }
+ });
 };
 const stateLabel=r=>r.status==='finished'?'Tugallangan':r.status==='active'?'Davom etmoqda':'Boshlanmagan';
 const sentLabel=r=>r.telegram==='sent'?'Ha':r.telegram==='missing_token'?'Bot tokeni yo‘q':r.telegram==='pending'?'Kutilmoqda':'—';
@@ -159,7 +217,7 @@ $('allResultsBtn').addEventListener('click',async()=>{
   result.rows.forEach((r,i)=>{
    const tr=document.createElement('tr');
    cells(tr,[i+1,r.code,r.participant?.fullname||'—',r.participant?.age??'—',r.participant?.username?'@'+r.participant.username:'—',stateLabel(r),r.report?r.report.points+'/100':'—',r.report?r.report.correct+'/25':'—',sentLabel(r)]);
-   const last=document.createElement('td');last.style.padding='9px';
+   const last=document.createElement('td');last.dataset.label='Batafsil';last.style.padding='9px';
    if(r.status!=='unused'){
     const button=document.createElement('button');button.type='button';button.className='secondary';
     button.style.padding='7px 10px';button.textContent='Ko‘rish';button.onclick=()=>{
