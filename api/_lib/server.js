@@ -158,6 +158,61 @@ export function summaryForAdmin(row){
   selected:choices.map((v,i)=>({number:i+1,selected:Number.isInteger(v)&&v>=0&&v<4?'ABCD'[v]:'—',correct:'ABCD'[Number(key[i])]}))
  };
 }
+
+/**
+ * Administrator-only overview for all issued codes. Reads from the same private
+ * Blob records as the per-user quiz; no separate database is needed.
+ * Finished attempts get a private immutable snapshot to make reloads cheaper.
+ * Call only after requireAdmin(req) has succeeded.
+ */
+export async function allAdminResults(){
+ const codes=registeredCodes();
+ const rows=await Promise.all(codes.map(async code=>{
+  const user=verifyCode(code);
+  const base=keyFor(user.codeId,'');
+  const start=await toJSON(base+'start.json');
+  if(!start)return {code,status:'unused',participant:null,progress:0,report:null,telegram:'not_applicable'};
+
+  let snapshot=await toJSON(base+'admin-summary.json');
+  if(!snapshot||snapshot.status!=='finished'){
+   const duration=start.durationMs===CURRENT_QUESTION_DURATION_MS?CURRENT_QUESTION_DURATION_MS:PREVIOUS_QUESTION_DURATION_MS;
+   const answers=await Promise.all(Array.from({length:25},(_,i)=>toJSON(base+'answer-'+String(i).padStart(2,'0')+'.json')));
+   const choices=[];
+   let when=Number(start.startedAt),now=Date.now();
+   if(!Number.isFinite(when))throw BAD('Test vaqti xato.',503);
+   for(const entry of answers){
+    if(!entry&&now<when+duration)break;
+    const answer=entry||{choice:-1,at:when+duration};
+    choices.push(Number.isInteger(answer.choice)&&answer.choice>=-1&&answer.choice<4?answer.choice:-1);
+    when=Math.min(Number(answer.at)||when+duration,when+duration);
+   }
+   const finished=choices.length===25;
+   snapshot={
+    status:finished?'finished':'active',
+    progress:choices.length,
+    completedAt:finished?new Date(when).toISOString():null,
+    report:finished?summaryForAdmin({status:'finished',answers:choices}):null
+   };
+   if(finished)await putOnce(base+'admin-summary.json',snapshot);
+  }
+  const delivered=snapshot.status==='finished'?await toJSON(base+'notification-sent.json'):null;
+  return {
+   code,status:snapshot.status,progress:snapshot.progress,
+   participant:{fullname:String(start.fullname||''),age:start.age,username:String(start.entered_username||'')},
+   completedAt:snapshot.completedAt,report:snapshot.report,
+   telegram:snapshot.status!=='finished'?'not_applicable':delivered?'sent':process.env.TELEGRAM_BOT_TOKEN?'pending':'missing_token'
+  };
+ }));
+ return {
+  total:rows.length,
+  started:rows.filter(r=>r.status!=='unused').length,
+  finished:rows.filter(r=>r.status==='finished').length,
+  active:rows.filter(r=>r.status==='active').length,
+  unused:rows.filter(r=>r.status==='unused').length,
+  rows
+ };
+}
+
 export function present(r){
  if(!r)return {status:'new',serverTime:new Date().toISOString()};
  if(r.status==='finished')return {status:'finished',retake:false,notification:r.notification_sent_at?'sent':'pending'};
