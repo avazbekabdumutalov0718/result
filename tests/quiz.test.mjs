@@ -41,7 +41,7 @@ test('Public state never reveals score, answer or key',()=>{
  assert.deepEqual(present(null).status,'new');
  const a=present({status:'finished',notification_sent_at:null,answers:[0],tg_id:5});
  assert.equal(a.status,'finished');
- assert.equal(a.notification,'pending');
+ assert.equal(Object.hasOwn(a,'notification'),false);
  assert.equal(Object.hasOwn(a,'score'),false);
  assert.equal(Object.hasOwn(a,'answers'),false);
  assert.equal(Object.hasOwn(a,'key'),false);
