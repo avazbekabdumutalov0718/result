@@ -1,2 +1,13 @@
-import {response,errorResponse,requirePost,authUser,state,present,maybeNotify} from './_lib/server.js';
-export default async function handler(req,res){try{requirePost(req);const u=authUser(req);const row=await state(u);await maybeNotify(row);return response(res,200,present(row));}catch(e){return errorResponse(res,e);}}
+import * as current from './_lib/server-v2.js';
+import * as previous from './_lib/server.js';
+export default async function handler(req,res){
+ const v2=String(req.headers?.cookie||'').includes('tafakkur_round2_session=');
+ const s=v2?current:previous;
+ try{
+  s.requirePost(req);
+  const u=s.authUser(req);
+  const row=await s.state(u);
+  await s.maybeNotify(row);
+  return s.response(res,200,s.present(row));
+ }catch(e){return s.errorResponse(res,e)}
+}
