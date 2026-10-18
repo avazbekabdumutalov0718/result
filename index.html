@@ -11,7 +11,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
   <meta name="theme-color" content="#11171a" />
-  <meta name="description" content="Tafakkur kutubxonasi — 25 savollik adabiyot bilimi sinovi." />
+  <meta name="description" content="Tafakkur kutubxonasi — 30 savollik adabiyot va mantiq sinovi." />
   <title>Tafakkur | Adabiyot bilimi sinovi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -152,6 +152,27 @@
       .option:active{background:#2b403b;border-color:var(--accent)}
     }
 
+
+    /* Final screen: optional participant rating and written feedback */
+    .feedback-panel{margin:23px 0 17px;border:1px solid rgba(229,201,145,.4);border-radius:17px;padding:20px;background:rgba(229,201,145,.055);text-align:left}
+    .feedback-top{display:flex;gap:12px;align-items:start}.feedback-emoji{font-size:23px}
+    .feedback-top h3{color:var(--accent);font-size:18px;margin:0 0 5px}
+    .feedback-top p{font-size:12px!important;line-height:1.6!important;margin:0 0 13px!important;color:#c2d3ca!important}
+    .rating-field{margin:3px 0 15px;border:none;padding:0;min-width:0}
+    .rating-field legend,.feedback-comment-label{display:block;font-size:12px;font-weight:800;color:#e9eadc;margin:0 0 8px}
+    .rating-field legend span{color:var(--accent)}.rating-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px}
+    .rating-options label{position:relative;cursor:pointer}
+    .rating-options input{position:absolute;opacity:0;width:1px;height:1px}
+    .rating-options span{display:flex;min-height:47px;align-items:center;justify-content:center;font-size:13px;font-weight:800;border-radius:10px;border:1px solid #526357;background:#152629;color:#e6dcc6}
+    .rating-options input:checked+span{background:rgba(229,201,145,.2);color:#f9dda0;border-color:var(--accent)}
+    .rating-options input:focus-visible+span{outline:3px solid var(--mint);outline-offset:2px}
+    #feedbackComment{display:block;box-sizing:border-box;width:100%;min-height:105px;resize:vertical;padding:13px;border-radius:11px;border:1px solid #526357;background:#122326;color:#fff;font:16px/1.5 var(--font);outline:none}
+    #feedbackComment:focus{border-color:var(--accent)}
+    .feedback-actions{display:grid;grid-template-columns:1fr auto;gap:10px;margin-top:14px}
+    .feedback-skip{background:transparent;border:1px solid #63776b;border-radius:11px;color:#e4dac7;padding:0 17px;min-height:53px;font-size:13px}
+    .feedback-thanks{border-radius:12px;border:1px solid #85b391;padding:13px;margin:18px 0;color:#bcf6ce;background:rgba(34,102,68,.12);font-size:13px}
+    @media(max-width:620px){.feedback-panel{padding:15px 13px}.rating-options{gap:4px}.rating-options span{font-size:12px;padding:2px}.feedback-actions{grid-template-columns:1fr}.feedback-skip{width:100%}}
+
     @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
   </style>
 </head>
@@ -169,10 +190,10 @@
         <div class="hero">
           <div class="eyebrow">Bilimlar bellashuvi</div>
           <h1>Kitob — <br/><em>tafakkur</em><br/>kaliti.</h1>
-          <p>O‘zbek va jahon adabiyotining eng sara asarlaridan tuzilgan intellektual sinov. Har bir savol sizni yangi bilimlar sari yetaklaydi.</p>
+          <p>20 ta o‘zbek, 5 ta jahon adabiyoti va 5 ta kulgili-mantiqiy savoldan iborat sinov. Oxirida test haqida fikringizni ham qoldirishingiz mumkin.</p>
           <div class="stats">
-            <div class="stat"><div class="num">25</div><small>Adabiy savol</small></div>
-            <div class="stat"><div class="num">15<span style="font-size:14px;letter-spacing:0">s</span></div><small>Har bir savolga</small></div>
+            <div class="stat"><div class="num">30</div><small>Savol</small></div>
+            <div class="stat"><div class="num">20<span style="font-size:14px;letter-spacing:0">s</span></div><small>Har bir savolga</small></div>
             <div class="stat"><div class="num">1×</div><small>Yagona urinish</small></div>
           </div>
           <div class="quote"><div class="qline"></div><p>“Kitobxonlik — ma’naviy dunyoni boyitadigan eng go‘zal odat.” <span>✦ Tafakkur kutubxonasi</span></p></div>
@@ -198,18 +219,18 @@
       </section>
       <section id="quiz" class="quiz-layout hidden" aria-live="polite">
         <div class="quiz-top"><div class="pill"><span class="green-dot"></span> Test davom etmoqda</div><span class="quiz-user" id="quizName"></span></div>
-        <div class="qmeta"><b id="qNumber">Savol 01 / 25</b><small id="qProgressLabel">0% bajarildi</small></div>
+        <div class="qmeta"><b id="qNumber">Savol 01 / 30</b><small id="qProgressLabel">0% bajarildi</small></div>
         <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
         <div class="qcard">
           <div class="brand-decoration"></div>
           <div class="qhead">
             <span id="qCategory" class="qtype">O‘zbek adabiyoti</span>
-            <div class="timer" id="timer" aria-label="Savol vaqti"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="33"/><circle id="timer-ring" cx="40" cy="40" r="33"/></svg><strong id="timerValue">15</strong><small>soniya</small></div>
+            <div class="timer" id="timer" aria-label="Savol vaqti"><svg viewBox="0 0 80 80"><circle cx="40" cy="40" r="33"/><circle id="timer-ring" cx="40" cy="40" r="33"/></svg><strong id="timerValue">20</strong><small>soniya</small></div>
           </div>
           <p class="qindex" id="qHeading">01 — SAVOL</p>
           <h2 id="qText"></h2>
           <div class="optionlist" id="options"></div>
-          <div class="qcard-bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-11v1"/></svg><span>Javobni tanlang. 15 soniya tugasa, savol avtomatik o‘tkaziladi.</span></div>
+          <div class="qcard-bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M12 10v7m0-11v1"/></svg><span>Javobni tanlang. 20 soniya tugasa, savol avtomatik o‘tkaziladi.</span></div>
           <div class="waiting" id="waiting"><div class="spinner"></div><span>Javob saqlanmoqda...</span></div>
         </div>
       </section>
@@ -221,6 +242,34 @@
         <div class="private-notice" role="status"><span class="private-ico">🔐</span><div><b>Natija maxfiy</b><small>Ballar, to‘g‘ri va noto‘g‘ri javoblar bu sahifada ko‘rsatilmaydi.</small></div></div>
         <div class="final-info" id="deliveryNote"><b>📨 Natija yuborilmoqda.</b><br/>Natija faqat tashkilotchi hisobiga jo‘natiladi.</div>
         <div class="final-info" style="margin-top:12px"><b>🔒 Qayta topshirish bloklangan.</b><br/>Ushbu bir martalik kod bilan testni qayta boshlay olmaysiz.</div>
+
+        <div id="feedbackPanel" class="feedback-panel hidden" aria-labelledby="feedbackTitle">
+          <div class="feedback-top">
+            <span class="feedback-emoji" aria-hidden="true">💬</span>
+            <div><h3 id="feedbackTitle">Test haqida fikringiz qanday?</h3>
+            <p>30 ta savol sizga yoqdimi? Qisqacha baho va fikr qoldiring. Bu natijangizga ta’sir qilmaydi.</p></div>
+          </div>
+          <form id="feedbackForm">
+            <fieldset class="rating-field">
+              <legend>Testni 1 dan 5 gacha baholang <span>*</span></legend>
+              <div class="rating-options" role="radiogroup" aria-label="Test bahosi">
+                <label><input type="radio" name="rating" value="1" required><span>1 ★</span></label>
+                <label><input type="radio" name="rating" value="2"><span>2 ★</span></label>
+                <label><input type="radio" name="rating" value="3"><span>3 ★</span></label>
+                <label><input type="radio" name="rating" value="4"><span>4 ★</span></label>
+                <label><input type="radio" name="rating" value="5"><span>5 ★</span></label>
+              </div>
+            </fieldset>
+            <label class="feedback-comment-label" for="feedbackComment">Fikringiz (ixtiyoriy)</label>
+            <textarea id="feedbackComment" rows="3" maxlength="600" placeholder="Savollar qiziqarli bo‘ldimi? Nimani yaxshilashimiz mumkin?"></textarea>
+            <div id="feedbackError" class="notice hidden" role="alert"></div>
+            <div class="feedback-actions">
+              <button type="submit" class="btn-primary" id="feedbackSend">Fikrni yuborish →</button>
+              <button type="button" id="feedbackSkip" class="feedback-skip">Hozir emas</button>
+            </div>
+          </form>
+        </div>
+        <div id="feedbackSuccess" class="feedback-thanks hidden" role="status">✅ Rahmat! Fikringiz tashkilotchiga saqlandi.</div>
         <a class="ghost-btn" style="display:inline-block;text-decoration:none" href="https://t.me/Tafakkur_kutubxonasi_result_bot" target="_blank" rel="noopener noreferrer">Telegram botiga qaytish ↗</a>
       </section>
     </main>
@@ -232,7 +281,7 @@
     'use strict';
     const $=id=>document.getElementById(id);
     let active=null, busy=false, timerInterval=null, offset=0, failedRequests=0;
-    const TOTAL=25, DURATION=15000;
+    const TOTAL=30, DURATION=20000;
     function show(screen){for(const s of ['intro','quiz','result'])$(s).classList.toggle('hidden',s!==screen);window.scrollTo({top:0,behavior:'instant'});}
     function tell(msg){const el=$('toast');el.textContent=msg;el.classList.remove('hidden');clearTimeout(tell.t);tell.t=setTimeout(()=>el.classList.add('hidden'),5500);}
     function error(msg){$('formError').textContent=msg;$('formError').classList.remove('hidden');}
@@ -259,7 +308,7 @@
       $('qProgressLabel').textContent=`${Math.round(data.index/TOTAL*100)}% bajarildi`;
       $('progressBar').style.width=`${data.index/TOTAL*100}%`;
       $('qHeading').textContent=`${String(data.index+1).padStart(2,'0')} — SAVOL`;
-      $('qCategory').textContent=data.question.world?'Jahon adabiyoti':'O‘zbek adabiyoti';
+      $('qCategory').textContent=data.question.fun?'Qiziqarli mantiqiy savol':data.question.world?'Jahon adabiyoti':'O‘zbek adabiyoti';
       $('qCategory').classList.toggle('world',!!data.question.world);
       $('qText').textContent=data.question.text;
       $('options').replaceChildren();
@@ -305,9 +354,37 @@
         },Math.min(1800*failedRequests,5000));
       }
     }
+    let feedbackDismissed=false;
+    function feedbackUI(data){
+      const available=data.total===30;
+      const submitted=data.feedbackSubmitted===true;
+      $('feedbackSuccess').classList.toggle('hidden',!available||!submitted);
+      $('feedbackPanel').classList.toggle('hidden',!available||submitted||feedbackDismissed);
+    }
+    $('feedbackSkip').addEventListener('click',()=>{
+      feedbackDismissed=true;
+      $('feedbackPanel').classList.add('hidden');
+    });
+    $('feedbackForm').addEventListener('submit',async ev=>{
+      ev.preventDefault();
+      const selected=$('feedbackForm').querySelector('input[name="rating"]:checked');
+      if(!selected){$('feedbackError').textContent='Iltimos, 1 dan 5 gacha baho tanlang.';$('feedbackError').classList.remove('hidden');return;}
+      $('feedbackError').classList.add('hidden');
+      $('feedbackSend').disabled=true;
+      try{
+        await request('/api/feedback',{rating:Number(selected.value),comment:$('feedbackComment').value.trim()});
+        $('feedbackPanel').classList.add('hidden');
+        $('feedbackSuccess').classList.remove('hidden');
+      }catch(e){
+        $('feedbackError').textContent=e.message;
+        $('feedbackError').classList.remove('hidden');
+      }finally{$('feedbackSend').disabled=false;}
+    });
+
     let retryId=null, retryCount=0;
     function showResult(data){
       show('result');
+      feedbackUI(data);
       $('resultHeading').textContent='Test yakunlandi!';
       $('resultSub').textContent='Yagona urinish yakunlandi';
       const delivered=data.notification==='sent';
