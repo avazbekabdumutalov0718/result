@@ -71,7 +71,7 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
   content:attr(data-label);display:block;font-size:10px;text-transform:uppercase;
   letter-spacing:.07em;color:#b0c5b4;margin-bottom:4px;font-weight:800
  }
- #allResultsTable td:nth-child(3),#allResultsTable td:nth-child(10){grid-column:1 / -1}
+ #allResultsTable td:nth-child(3),#allResultsTable td:nth-child(11){grid-column:1 / -1}
  #allResultsTable td:nth-child(3){font-weight:800;color:#f7e7bc}
  #allResultsTable td:nth-child(7){font-weight:800;color:var(--gold)}
  #allResultsTable td:last-child{border-bottom:none!important}
@@ -92,18 +92,18 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
 </head>
 <body><main>
 <div class="top"><span>✦ TAFAKKUR KUTUBXONASI</span><a href="/">← Test sahifasi</a></div>
-<h1>20 ta maxsus kod</h1>
+<h1>Yangi test — 15 ta kod</h1>
 <p class="lead">Bu sahifa faqat tashkilotchi uchun. Bir martalik kodlarni va qatnashchilar natijalarini boshqarish uchun maxfiy admin kalitingizni kiriting.</p>
-<a class="jump-results" href="#allResultsPanel">↓ Barcha 20 ta natijani ko‘rish</a>
+<a class="jump-results" href="#allResultsPanel">↓ Barcha yangi natijalarni ko‘rish</a>
 <div class="panel">
 <form id="generate" autocomplete="off">
 <label for="adminKey">Admin maxfiy kaliti</label>
 <input id="adminKey" type="password" required minlength="20" placeholder="Vercel’dagi QUIZ_ADMIN_SECRET" autocomplete="new-password">
-<button id="btn" style="margin-top:18px" type="submit">20 ta kodni ko‘rsatish →</button>
+<button id="btn" style="margin-top:18px" type="submit">15 ta kodni ko‘rsatish →</button>
 </form>
 <p id="error" role="alert"></p>
 <div id="output" hidden>
-<h2>20 ta tayyor 4 xonali kod</h2><p class="lead">Kodlar server sozlamalarida yashirin saqlanadi. Ularni faqat admin parolingiz bilan ko‘rish mumkin.</p>
+<h2>15 ta yangi 4 xonali kod</h2><p class="lead">Kodlar server sozlamalarida yashirin saqlanadi. Ularni faqat admin parolingiz bilan ko‘rish mumkin.</p>
 <pre id="codes"></pre>
 <div class="actions"><button class="secondary" id="copy" type="button">📋 Nusxalash</button><button class="secondary" id="download" type="button">⬇ TXT yuklab olish</button></div>
 </div>
@@ -123,11 +123,11 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
 </form>
 
 <div id="allResultsPanel" style="border:1px solid #526b5a;background:#10221e;border-radius:16px;padding:20px;margin:24px 0">
- <h2 style="font:700 28px Georgia,serif;color:var(--gold);margin:0 0 10px">Barcha 20 ta qatnashchi natijasi</h2>
+ <h2 style="font:700 28px Georgia,serif;color:var(--gold);margin:0 0 10px">Barcha 15 ta yangi qatnashchi natijasi</h2>
  <p class="lead" style="margin:0 0 16px">Yuqoridagi admin maxfiy kalitini kiriting va bitta tugmani bosing. Barcha kodlar, ismlar, natijalar va test holati bitta jadvalda ko‘rinadi. 4 xonali kodni alohida kiritish shart emas.</p>
  <div class="actions">
-  <button id="allResultsBtn" type="button">20 ta natijani birga ko‘rish</button>
-  <button id="csvBtn" class="secondary" type="button" disabled>CSV faylni yuklash</button>
+  <button id="allResultsBtn" type="button">15 ta yangi natijani ko‘rish</button>
+  <button id="legacyResultsBtn" type="button" class="secondary">Oldingi 20 ta natijani ko‘rish</button><button id="csvBtn" class="secondary" type="button" disabled>CSV faylni yuklash</button>
  </div>
  <p id="allResultsStatus" role="status" style="color:#bfd6c5"></p>
  <div id="allResultsWrap" hidden style="overflow-x:auto;margin-top:16px">
@@ -135,7 +135,7 @@ pre{padding:19px;max-height:420px;overflow:auto;background:#081311;border:1px so
    <thead><tr>
     <th scope="col">№</th><th scope="col">Kod</th><th scope="col">Ism-familiya</th><th scope="col">Yosh</th>
     <th scope="col">Telegram</th><th scope="col">Holati</th><th scope="col">Ball</th>
-    <th scope="col">To‘g‘ri</th><th scope="col">Yuborilgan</th><th scope="col">Batafsil</th>
+    <th scope="col">To‘g‘ri</th><th scope="col">Baho/fikr</th><th scope="col">Yuborilgan</th><th scope="col">Batafsil</th>
    </tr></thead>
    <tbody id="allResultsBody"></tbody>
   </table>
@@ -158,7 +158,7 @@ $('generate').addEventListener('submit',async e=>{
   if(!r.ok)throw Error(data.error||'Kod yaratish amalga oshmadi');
   list=data.codes;$('output').hidden=false;$('codes').textContent=list.map((s,i)=>String(i+1).padStart(2,'0')+'. '+s).join('\n');
   $('adminKey').value='';
- }catch(err){$('error').textContent=err.message;}finally{$('btn').disabled=false;$('btn').textContent='20 ta kodni ko‘rsatish →';}
+ }catch(err){$('error').textContent=err.message;}finally{$('btn').disabled=false;$('btn').textContent='15 ta kodni ko‘rsatish →';}
 });
 $('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText(list.join('\n'));$('copy').textContent='✓ Nusxalandi';}catch{$('error').textContent='Nusxalash cheklangan. Kodlarni qo‘lda tanlang.'}});
 $('download').addEventListener('click',()=>{
@@ -171,10 +171,11 @@ const renderResult=(r)=>{
  const person=r.participant||{};
  const lines=['Ism: '+(person.fullname||'—'),'Yosh: '+(person.age??'—'),'Telegram: '+(person.username?'@'+person.username:'—'),'Holat: '+(r.status==='finished'?'Test tugatilgan':'Test davom etmoqda')];
  if(r.report){
-   lines.push('NATIJA: '+r.report.points+' / 100','To‘g‘ri: '+r.report.correct+' / 25','Noto‘g‘ri: '+r.report.incorrect,'Javobsiz: '+r.report.missed);
+   lines.push('NATIJA: '+r.report.points+' / 100','To‘g‘ri: '+r.report.correct+' / '+(r.report.total||25),'Noto‘g‘ri: '+r.report.incorrect,'Javobsiz: '+r.report.missed);
    lines.push('Javoblar (tanlangan / to‘g‘ri):');
    for(const d of r.report.selected)lines.push(String(d.number).padStart(2,'0')+'. '+d.selected+' / '+d.correct);
  }
+ if(r.feedback)lines.push('Testga baho: '+r.feedback.rating+'/5 ★','Test haqidagi fikr: '+(r.feedback.comment||'—'));
  lines.push('Telegramga yuborish: '+(r.telegram==='sent'?'✅ Yuborilgan':r.telegram==='missing_token'?'❌ Bot tokeni Vercel’da yo‘q':'⏳ Hali yuborilmagan'));
  if(r.message)lines.push(r.message);
  $('resultText').textContent=lines.join('\n');
@@ -195,9 +196,9 @@ async function lookupResult(action){
  finally{$('lookupBtn').disabled=false;$('resendBtn').disabled=false;}
 }
 
-let allRows=[];
+let allRows=[];let selectedRound='current';
 const cells=(tr,values)=>{
- const labels=['№','Kod','Ism-familiya','Yosh','Telegram','Holati','Ball','To‘g‘ri','Yuborilgan'];
+ const labels=['№','Kod','Ism-familiya','Yosh','Telegram','Holati','Ball','To‘g‘ri','Baho/fikr','Yuborilgan'];
  values.forEach((value,i)=>{
   const td=document.createElement('td');td.textContent=String(value??'—');
   td.dataset.label=labels[i];td.style.padding='12px 11px';td.style.borderBottom='1px solid #344d41';td.style.verticalAlign='middle';
@@ -206,15 +207,15 @@ const cells=(tr,values)=>{
 };
 const stateLabel=r=>r.status==='finished'?'Tugallangan':r.status==='active'?'Davom etmoqda':'Boshlanmagan';
 const sentLabel=r=>r.telegram==='sent'?'Ha':r.telegram==='missing_token'?'Bot tokeni yo‘q':r.telegram==='pending'?'Kutilmoqda':'—';
-$('allResultsBtn').addEventListener('click',async()=>{
+async function fetchAllResults(){
  const secret=$('lookupKey').value;
  $('allResultsStatus').textContent='';
  if(secret.length<20){$('allResultsStatus').textContent='Avval yuqoridagi admin maxfiy kalitini kiriting.';$('lookupKey').focus();return;}
- $('allResultsBtn').disabled=true;$('allResultsBtn').textContent='Barcha natijalar yuklanmoqda…';
+ $('allResultsBtn').disabled=true;$('legacyResultsBtn').disabled=true;$('allResultsBtn').textContent='Barcha natijalar yuklanmoqda…';
  try{
   const resp=await fetch('/api/admin/results',{
    method:'POST',headers:{'Content-Type':'application/json','X-Quiz-Admin-Key':secret},
-   credentials:'same-origin',cache:'no-store',body:'{}'
+   credentials:'same-origin',cache:'no-store',body:JSON.stringify({round:selectedRound})
   });
   const result=await resp.json().catch(()=>({}));
   if(!resp.ok)throw Error(result.error||'Natijalar olinmadi. Qayta urinib ko‘ring.');
@@ -223,7 +224,7 @@ $('allResultsBtn').addEventListener('click',async()=>{
   $('allResultsBody').replaceChildren();
   result.rows.forEach((r,i)=>{
    const tr=document.createElement('tr');
-   cells(tr,[i+1,r.code,r.participant?.fullname||'—',r.participant?.age??'—',r.participant?.username?'@'+r.participant.username:'—',stateLabel(r),r.report?r.report.points+'/100':'—',r.report?r.report.correct+'/25':'—',sentLabel(r)]);
+   cells(tr,[i+1,r.code,r.participant?.fullname||'—',r.participant?.age??'—',r.participant?.username?'@'+r.participant.username:'—',stateLabel(r),r.report?r.report.points+'/100':'—',r.report?r.report.correct+'/'+(r.report.total||25):'—',r.feedback?(r.feedback.rating+' ★'+(r.feedback.comment?' 💬':'')):'—',sentLabel(r)]);
    const last=document.createElement('td');last.dataset.label='Batafsil';last.style.padding='9px';
    if(r.status!=='unused'){
     const button=document.createElement('button');button.type='button';button.className='secondary';
@@ -237,22 +238,24 @@ $('allResultsBtn').addEventListener('click',async()=>{
   });
   $('allResultsWrap').hidden=false;
   $('csvBtn').disabled=false;
-  $('allResultsStatus').textContent='Jami: '+result.total+' • Tugallagan: '+result.finished+' • Jarayonda: '+result.active+' • Boshlamagan: '+result.unused;
+  $('allResultsStatus').textContent=(selectedRound==='legacy'?'Oldingi test: ':'Yangi test: ')+'Jami: '+result.total+' • Tugallagan: '+result.finished+' • Jarayonda: '+result.active+' • Boshlamagan: '+result.unused;
  }catch(e){$('allResultsStatus').textContent='Xatolik: '+e.message;}
- finally{$('allResultsBtn').disabled=false;$('allResultsBtn').textContent='20 ta natijani birga ko‘rish';}
-});
+ finally{$('allResultsBtn').disabled=false;$('legacyResultsBtn').disabled=false;$('allResultsBtn').textContent='15 ta yangi natijani ko‘rish';}
+}
+$('allResultsBtn').addEventListener('click',()=>{selectedRound='current';void fetchAllResults();});
+$('legacyResultsBtn').addEventListener('click',()=>{selectedRound='legacy';void fetchAllResults();});
 $('csvBtn').addEventListener('click',()=>{
  if(!allRows.length)return;
  const quote=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
- const lines=[['Kod','Ism-familiya','Yosh','Telegram','Holat','Ball (100)','To‘g‘ri (25)','Noto‘g‘ri','Javobsiz','Telegramga yuborilgan','Yakunlangan sana']];
+ const lines=[['Kod','Ism-familiya','Yosh','Telegram','Holat','Ball (100)','To‘g‘ri','Noto‘g‘ri','Javobsiz','Baho (1-5)','Test fikri','Telegramga yuborilgan','Yakunlangan sana']];
  for(const r of allRows)lines.push([
   r.code,r.participant?.fullname||'',r.participant?.age??'',r.participant?.username?'@'+r.participant.username:'',
-  stateLabel(r),r.report?.points??'',r.report?.correct??'',r.report?.incorrect??'',r.report?.missed??'',
+  stateLabel(r),r.report?.points??'',r.report?.correct??'',r.report?.incorrect??'',r.report?.missed??'',r.feedback?.rating??'',r.feedback?.comment||'',
   sentLabel(r),r.completedAt||''
  ]);
  const blob=new Blob(['\uFEFF'+lines.map(row=>row.map(quote).join(',')).join('\r\n')],{type:'text/csv;charset=utf-8'});
  const url=URL.createObjectURL(blob),a=document.createElement('a');
- a.href=url;a.download='tafakkur-barcha-20-natija.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
+ a.href=url;a.download=selectedRound==='legacy'?'tafakkur-oldingi-20-natija.csv':'tafakkur-yangi-15-natija.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);
 });
 
 $('findResult').addEventListener('submit',e=>{e.preventDefault();void lookupResult('lookup');});
