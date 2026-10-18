@@ -1,5 +1,5 @@
 import crypto from 'node:crypto';
-import {QUESTIONS} from './questions.js';
+import {QUESTIONS} from './questions-legacy.js';
 import {put, get, del} from '@vercel/blob';
 const BAD=(message,status=401)=>Object.assign(new Error(message),{status});
 const secret=()=>{const t=process.env.TELEGRAM_BOT_TOKEN;if(!t)throw BAD('Botning yangi tokeni hali sozlanmagan.',503);return t;};
@@ -19,11 +19,11 @@ const idSecret=()=>{
  return s;
 };
 const configuredCodes=()=>{
- const raw=String(process.env.QUIZ_ACCESS_CODES||'').trim();
- if(!raw)throw BAD('20 ta maxsus kod hali sozlanmagan (QUIZ_ACCESS_CODES).',503);
+ const raw=String(process.env.QUIZ_LEGACY_ACCESS_CODES||'').trim();
+ if(!raw)throw BAD('Oldingi 20 ta kod arxivi sozlanmagan.',503);
  const values=raw.split(/[\s,;]+/).filter(Boolean);
  if(values.length!==20||new Set(values).size!==20||values.some(code=>!/^\d{4}$/.test(code)))
-  throw BAD('QUIZ_ACCESS_CODES da 20 ta noyob 4 xonali kod bo‘lishi shart.',503);
+  throw BAD('Oldingi kodlar ro‘yxatida 20 ta noyob 4 xonali kod bo‘lishi shart.',503);
  return values;
 };
 export function registeredCodes(){return [...configuredCodes()];}
@@ -148,7 +148,7 @@ export async function submit(u,i,choice){
 }
 export function summaryForAdmin(row){
  if(!row||row.status!=='finished')return null;
- const key=String(process.env.QUIZ_ANSWER_KEY||'');
+ const key=String(process.env.QUIZ_LEGACY_ANSWER_KEY||'');
  if(!/^[0-3]{25}$/.test(key))throw BAD('To‘g‘ri javoblar kaliti sozlanmagan.',503);
  const choices=Array.isArray(row.answers)?row.answers:[];
  const correct=choices.filter((answer,i)=>answer===Number(key[i])).length;
