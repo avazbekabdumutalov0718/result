@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "check": "node --check api/_lib/server.js && node --check api/state.js && node --check api/start.js && node --check api/answer.js && node --check api/admin/codes.js && node --check api/admin/result.js && node --check api/admin/results.js",
+    "check": "node --check api/_lib/server.js && node --check api/_lib/server-v2.js && node --check api/state.js && node --check api/start.js && node --check api/answer.js && node --check api/feedback.js && node --check api/admin/codes.js && node --check api/admin/result.js && node --check api/admin/results.js",
     "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
